@@ -1,0 +1,10 @@
+// const host = '10.222.46.28'
+const host = '10.222.48.23'
+export const LOGIN = `http://${host}:8070/user/authorization`
+export const REGISTER = `http://${host}:8070/user/info`
+export const FINDBYACCOUNT = `http://${host}:8070/user/datas/`
+export const SHOWSONAR = `http://${host}:8070/user/showForSonar/`
+export const INDIVIDUATION = `http://${host}:8070/user/individuation/`
+export const SELECT_BOARD = `http://${host}:8070/user/boardChoice`
+export const SEND_BOARD_CHOICE = `http://${host}:8070/user/boardChoice`
+export const RESET_PASSWORD = `http://${host}:8070/user/authentication`

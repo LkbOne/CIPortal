@@ -1,0 +1,825 @@
+# MBC-PORTAL
+# Content
+[toc]
+## API Document
+## Socket Document
+1. 发送Git MergeRequestData
+    - Send Data
+
+```
+{
+    "projects":[
+        {
+            "targetBranch":"master",
+            "sourceBranch":"develop",
+            "projectImage":"",
+            "authorName":"hugh",
+            "authorImage":"https://www.gravatar.com/avatar/a6845eebf1348a3102ee05c543992929?s=80&d=identicon",
+            "mergeRequestId":"4",
+            "projectName":"git-flow-test",
+            "url":"http://146.222.94.208/root/git-flow-test/merge_requests/3",
+            "updatedAt":"2018-08-28 20:06",
+            "timeFlag":false,
+            "mergeStatus":"false"
+        }
+    ],
+    "status":"success",
+    "type":"mergeRequest"
+}
+
+
+
+```
+
+2. 发送Git CIData
+3. 发送Trello TrelloBoardData
+
+```
+{
+    "projects":[
+
+        {
+            "allCardsNum":9,
+            "allListNum":6,
+            "broadUrl":"https://trello.com/b/4ygxvGvp/ci-cd-setup",
+            "doneCardPercent":"0.0%",
+            "doneCardsNum":0,
+            "id":"5afa37bdd015619c742896c8",
+            "projectName":"CI/CD Setup",
+            "sonarData":{
+                "coverage":3,
+                "bugs":"94",
+                "reliability_rating":"3",
+                "code_smells":"6.7K",
+                "duplicated_lines_density":7,
+                "sqale_rating":"1",
+                "security_rating":"2",
+                "vulnerabilities":"137"
+            },
+            "testCardPercent":"0.0%",
+            "testCardsNum":0,
+            "todoCardPercent":"44.4%",
+            "todoCards":[
+                {
+                    "all":0,
+                    "cardName":"Attempt to invoke virtual method 'int java.util.LinkedList.size()' on a null object reference",
+                    "cardUrl":"https://trello.com/c/YUPFykd8/209-attempt-to-invoke-virtual-method-int-javautillinkedlistsize-on-a-null-object-reference",
+                    "complete":0,
+                    "dateLastActivity":"615449",
+                    "incomplete":0,
+                    "members":[
+
+                    ],
+                    "percent":0,
+                    "state":"bug"
+                },
+                {
+                    "all":0,
+                    "cardName":"undefined is not an object (evaluating 'e[r].call')",
+                    "cardUrl":"https://trello.com/c/fOj4lUT0/208-undefined-is-not-an-object-evaluating-ercall",
+                    "complete":0,
+                    "dateLastActivity":"694046",
+                    "incomplete":0,
+                    "members":[
+
+                    ],
+                    "percent":0,
+                    "state":"bug"
+                },
+                {
+                    "all":3,
+                    "cardName":"Android testing framework research - Robolectric",
+                    "cardUrl":"https://trello.com/c/PjElPwQU/2-android-testing-framework-research-robolectric",
+                    "complete":0,
+                    "dateLastActivity":"9770481",
+                    "incomplete":3,
+                    "members":[
+                        "BL"
+                    ],
+                    "percent":0,
+                    "state":"todo"
+                },
+                {
+                    "all":3,
+                    "cardName":"Android testing framework research - Appium",
+                    "cardUrl":"https://trello.com/c/2R82kKyH/1-android-testing-framework-research-appium",
+                    "complete":0,
+                    "dateLastActivity":"9770490",
+                    "incomplete":3,
+                    "members":[
+                        "BL"
+                    ],
+                    "percent":0,
+                    "state":"todo"
+                }
+            ],
+            "todoCardsNum":4,
+            "trelloAndSonarMappingNum":63
+        }
+    ],
+    "status":"success",
+    "type":"trelloBorad"
+}
+
+
+```
+
+4. 发送Sonar SonarData
+    ```
+    {
+        "projects":[
+            {
+                "coverage":4,
+                "bugs":"31",
+                "reliability_rating":"3",
+                "code_smells":"4.7K",
+                "duplicated_lines_density":10,
+                "sqale_rating":"1",
+                "security_rating":"2",
+                "vulnerabilities":"125",
+                "alert_status":"OK",
+                "projectName":"IRIS4_BCR",
+                "url":"http://zha-mvp-005-w7.corp.oocl.com:9000/dashboard?id=ir4.bcr"
+            }
+        ],
+        "status":"success",
+        "type":"sonar"
+    }
+
+
+    ```
+## Design Document
+
+- ### IntervalSubject  &&CallApiThread
+     - ### Class
+       IntervalSubject<br>
+       CallApiThread<br>
+     - ### IntervalSubject
+         - ### Function
+             1. firstRegisterOberver()
+
+                 Return:<br>
+                 Desc:<br>
+                     服务器启动，第一次将所有的data当做观察者加入进来
+             2. registerOberver（param1）
+                 Param:<br>
+                     - param1(Type=Data): 各个平台的Data基类 <br>
+                 Return:<br>
+                 Desc:<br>
+                     将Data加入到观察者数组中
+             3. removeOberver(param1)
+                 Param:<br>
+                     - param1(Type=Data): 各个平台的Data基类 <br>
+                 Return:<br>
+                 Desc:<br>
+                     将Data从观察者数组中删去
+             4. notifyObervers()   “异步”的方法
+                 Param:<br>
+                 Return:<br>
+                 Desc:<br>
+                     通过计算时间间隔>=interval，通知相应的观察者干活
+      - ### CallAPIThread
+         - ### Function
+             1. sendMessage()   “异步”的方法
+                 Param:<br>
+                 Return:<br>
+                 Desc:<br>
+                     将从平台得到的数据，通过socket返回给frontend
+
+- ### Data(抽象类)
+    - ### Function
+     1. comfirmBaseAuthorityAndGetCheckBoxData(param1)
+         desc:用于确认token等基本call api的配置没有错，且返回组成chockbox所要的参数
+     2. projects(param)
+         desc:用于将得到的所有项目的数据，组成之后又项目id，与名字的数组
+     3. changeParams(param1)
+         param1:为fronend传过来的配置参数
+         desc:用于在修改platform的基本参数时，调用的方法
+
+     4. callDataAndSave2DataBean(param1)
+         param1:boardName
+         desc:用于在多线程中继续的call 不同平台的api，并保存在databean中
+     5. socketGate(param1)
+         desc:用于做callDataAndSave2DataBean的门，为执行callDataAndSave2DataBean前后做一定的修改
+    - ### param
+        int beforeTime;
+        String name=null;
+        DatasBeanDao datasBeanDao = null;
+        PlatformDao platformDao = null;
+        Platforms platforms=null;
+
+- ### Platforms(接口)
+    - ### Function
+    - ### param
+         String name = null;
+         JSONObject setting = new JSONObject();
+         JSONArray chosenProjects = new JSONArray();
+         JSONArray allProjects = new JSONArray();
+         int interval =0;
+ - ### Databeans
+     - ### param
+         String id
+         String name   //boardName
+         String datas //用于存储board数据的变量
+- ### UserService
+    - ### Function
+- ### Gitlab
+    - ### Class
+        GitPlatform<br>
+        Data<br>
+        GitData<br>
+        MergeRequestData<br>
+        CIData
+    - ### Data
+        - ### Function
+            1. dealWithChosenField(param1,param2,param3,param4,param5)
+                 Param:<br>
+                     - param1(Type=int): 平台选择数 [0:CIData 1:MergeRequestData 2:SentryData]<br>
+                     - param2(Type=int): 选择展示功能与字段的判断位的数 <br>
+                     - param3(Type=String): 项目名称<br>
+                     - param4(Type=int): 项目处理需要字段的左边界<br>
+                     - param5(Type=int): 项目处理需要字段的右边界<br>
+                 Return:<br>
+                 Desc:<br>
+                     根据param2，得到并封装相对应字段的map关系
+            2. dealWithChosenFunction(param1,param2,param3,param4,param5)
+                 Param:<br>
+                     - param1(Type=int): 平台选择数 [0:CIData 1:MergeRequestData 2:SentryData]<br>
+                     - param2(Type=int): 选择展示功能与字段的判断位的数 <br>
+                     - param3(Type=String): 项目名称<br>
+                     - param4(Type=int): 项目处理需要功能的左边界<br>
+                     - param5(Type=int): 项目处理需要功能的右边界<br>
+                 Return:<br>
+                 Desc:<br>
+                     根据param2，得到并封装相对应功能的map关系
+
+            3. dealWithChosen(param1,param2,param3,param4,param5,param6)
+                 Param:<br>
+                     - param1(Type=int): 平台选择数 [0:CIData 1:MergeRequestData 2:SentryData]<br>
+                     - param2(Type=HashMap<String,String>): 返回的mapping 关系 <br>
+                     - param3(Type=int): 选择展示功能与字段的判断位的数<br>
+                     - param4(Type=String): 项目名称<br>
+                     - param5(Type=int): 项目处理字段的左边界<br>
+                     - param6(Type=int): 项目处理字段的右边界<br>
+                 Return:<br>
+                 Desc:<br>
+                     根据param2，得到并封装相对应的map关系
+    - ### GitPlatform
+        - ### Function
+            1. dataOfChosenProject2CIData(param1,param2,param3，param4)
+                 Param:<br>
+                     - param1: User选择展示的项目<br>
+                     - param2: 展示CI卡片的个数<br>
+                     - param3: Git的IP<br>
+                     - param4: Git的PrivateToken<br>
+                 Return:<br>
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+           2. dataOfChosenProject2MergeRequest(param1,param2,param3)
+                 Param:<br>
+                     - param1: User选择展示的项目<br>
+                     - param2: Git的IP<br>
+                     - param3: Git的PrivateToken<br>
+                 Return:<br>
+
+                    ```
+                        "projects":[
+                                        {
+                                            "targetBranch":"master",
+                                            "sourceBranch":"develop",
+                                            "projectImage":"",
+                                            "authorName":"hugh",
+                                            "authorImage":"https://www.gravatar.com/avatar/a6845eebf1348a3102ee05c543992929?s=80&d=identicon",
+                                            "mergeRequestId":"4",
+                                            "projectName":"git-flow-test",
+                                            "url":"http://146.222.94.208/root/git-flow-test/merge_requests/3",
+                                            "updatedAt":"2018-08-28 20:06",
+                                            "timeFlag":false,
+                                            "mergeStatus":"false"
+                                        }
+                                    ],
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+           3. dataOfChosenProject2Hook(param1,param2,param3,param4,param5)
+                 Param:<br>
+                     - param1: User选择展示的项目<br>
+                     - param2: User选择展示的项目的已经申请的hook<br>
+                     - param3: Git的IP<br>
+                     - param4: Git的PrivateToken<br>
+                     - param5: User的account
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，对未连接的hook的项目，进行封装并连接
+           4. dataOfChosenProject2Hook(param1)
+                 Param:<br>
+                     - param1(Type=String): 有gitLabhook发送的project的事件数据<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据发送过来的数据，判断且对应处理，并返回处理后的数据
+            5. comfirmHook(param1，param2)
+                 Param:<br>
+                     - param1(Type=JSONArray): User选择展示的项目<br>
+                     - param2(Type=JSONArray): 已经与对应项目建立Hook的项目列表<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目id，与已经建立的项目Hook进行对比，返回还没有建立Hook的项目id
+    - ### GitData
+        - ### Function
+
+            1. dataOfProjects(param1,param2,param3，param4,param5,param6,param7)
+                 Param:<br>
+                     - param1: 所有项目的数据<br>
+                     - param2: User选择展示的项目的Id等<br>
+                     - param3: Git的IP<br>
+                     - param4: 展示CI卡片的个数<br>
+                     - param5: Git的PrivateToken<br>
+                     - param6: MergerRequest 或者CIData的对象<br>
+                     - param7: 选择展示功能与字段的判断位的数
+                 Return:<br>
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+    - ### MergeRequestData
+        - ### Function
+            1. dataOfChosenProject(param1,param2,param3，param4,param5,param6,param7)
+                 Param:<br>
+                     - param1: 所有项目的数据<br>
+                     - param2: User选择展示的项目的Id等<br>
+                     - param3: Git的IP<br>
+                     - param4: 展示CI卡片的个数<br>
+                     - param5: Git的PrivateToken<br>
+                     - param6: MergerRequest 或者CIData的对象<br>
+                     - param7: 选择展示功能与字段的判断位的数
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+             2. choiceField(param1,param2,param3)
+                 Param:<br>
+                     - param1(Type=int): 选择展示功能与字段的判断位的数<br>
+                     - param2(Type=HashMap<String,String>): 根据数最终得到的功能与字段的Map值<br>
+                     - param3(Type=JSONObject):一个MergeRequest的数据<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      由0-13位为字段位，14-20位为功能位
+                      根据param1中的数得到一个32位的布尔数组，再根据相对应的位映射得到相对应的名字
+             3. dealWithData(param1, param2,param3)
+                 Param:<br>
+                     - param1(Type=JSONObject): 一个MergeRequest的数据<br>
+                     - param2(Type=JSONObject): 该项目的名字与key等<br>
+                     - param3(Type=int):选择展示功能与字段的判断位的数<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      根据param2，结合choiceField函数，得到处理后的数据
+             4. dealWithHookMessage(param1, param2,param3)
+                 Param:<br>
+                     - param1(Type=JSONObject): 一个一个MergeRequest的数据的数据<br>
+                     - param2(Type=String): 该项目名<br>
+                     - param3(Type=int):选择展示功能与字段的判断位的数<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      处理gitlab的hook传来的一个MergeRequest的数据
+                      根据param2，结合choiceField函数，得到处理后的数据
+    - ### CIData
+        - ### Function
+            1. dataOfChosenProject(param1,param2,param3，param4,param5,param6,param7)
+                 Param:<br>
+                     - param1(Type=JSONObject): 该项目的名字与key等<br>
+                     - param2(Type=JSONArray): 封装所有项目数据的容器<br>
+                     - param3(Type=int): 展示CI卡片的个数<br>
+                     - param4(Type=String): Git的IP<br>
+                     - param5(Type=String): Git的PrivateToken<br>
+                     - param6(Type=int): 选择展示功能与字段的判断位的数<br>
+                     - param7(Type=String): 该项目的id
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+            2. choiceField(param1,param2,param3)
+                 Param:<br>
+                     - param1(Type=int): 选择展示功能与字段的判断位的数<br>
+                     - param2(Type=HashMap<String,String>): 根据数最终得到的功能与字段的Map值<br>
+                     - param3(Type=String):项目名<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      由0-13位为字段位，14-20位为功能位
+                      根据param1中的数得到一个32位的布尔数组，再根据相对应的位映射得到相对应的名字
+             3. dealWithData(param1, param2,param3,param4,param5)
+                 Param:<br>
+                     - param1(Type=JSONObject): 一个CI的数据<br>
+                     - param2(Type=String): 该项目名<br>
+                     - param3(Type=int):选择展示功能与字段的判断位的数<br>
+                     - param4(Type=String):git的ip<br>
+                     - param5(Type=String):该项目id<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      根据param2，结合choiceField函数，得到处理后的数据
+             4. dealWithHookMessage(param1, param2,param3)
+                 Param:<br>
+                     - param1(Type=JSONObject): 一个CI的数据<br>
+                     - param2(Type=String): 该项目名<br>
+                     - param3(Type=int):选择展示功能与字段的判断位的数<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      处理gitlab的hook传来的CIdata
+                      根据param2，结合choiceField函数，得到处理后的数据
+- ### Trello
+     - ### Class
+        TrelloData
+    - ### TrelloPlatform
+        - ### Function
+            1. dataOfChosenProject(param1,param2,param3,param4)
+                 Param:<br>
+                     - param1: User选择展示的项目<br>
+                     - param2: 所有的Trello项目的Id，name<br>
+                     - param3: Trello的trelloToken<br>
+                     - param4: Trello的trelloAppkey<br>
+                 Return:<br>
+
+                        ```
+                        "projects":[
+
+                                {
+                                    "allCardsNum":9,
+                                    "allListNum":6,
+                                    "broadUrl":"https://trello.com/b/4ygxvGvp/ci-cd-setup",
+                                    "doneCardPercent":"0.0%",
+                                    "doneCardsNum":0,
+                                    "id":"5afa37bdd015619c742896c8",
+                                    "projectName":"CI/CD Setup",
+                                    "sonarData":{
+                                        "coverage":3,
+                                        "bugs":"94",
+                                        "reliability_rating":"3",
+                                        "code_smells":"6.7K",
+                                        "duplicated_lines_density":7,
+                                        "sqale_rating":"1",
+                                        "security_rating":"2",
+                                        "vulnerabilities":"137"
+                                    },
+                                    "testCardPercent":"0.0%",
+                                    "testCardsNum":0,
+                                    "todoCardPercent":"44.4%",
+                                    "todoCards":[
+                                        {
+                                            "all":0,
+                                            "cardName":"Attempt to invoke virtual method 'int java.util.LinkedList.size()' on a null object reference",
+                                            "cardUrl":"https://trello.com/c/YUPFykd8/209-attempt-to-invoke-virtual-method-int-javautillinkedlistsize-on-a-null-object-reference",
+                                            "complete":0,
+                                            "dateLastActivity":"615449",
+                                            "incomplete":0,
+                                            "members":[
+
+                                            ],
+                                            "percent":0,
+                                            "state":"bug"
+                                        },
+                                        {
+                                            "all":0,
+                                            "cardName":"undefined is not an object (evaluating 'e[r].call')",
+                                            "cardUrl":"https://trello.com/c/fOj4lUT0/208-undefined-is-not-an-object-evaluating-ercall",
+                                            "complete":0,
+                                            "dateLastActivity":"694046",
+                                            "incomplete":0,
+                                            "members":[
+
+                                            ],
+                                            "percent":0,
+                                            "state":"bug"
+                                        },
+                                        {
+                                            "all":3,
+                                            "cardName":"Android testing framework research - Robolectric",
+                                            "cardUrl":"https://trello.com/c/PjElPwQU/2-android-testing-framework-research-robolectric",
+                                            "complete":0,
+                                            "dateLastActivity":"9770481",
+                                            "incomplete":3,
+                                            "members":[
+                                                "BL"
+                                            ],
+                                            "percent":0,
+                                            "state":"todo"
+                                        },
+                                        {
+                                            "all":3,
+                                            "cardName":"Android testing framework research - Appium",
+                                            "cardUrl":"https://trello.com/c/2R82kKyH/1-android-testing-framework-research-appium",
+                                            "complete":0,
+                                            "dateLastActivity":"9770490",
+                                            "incomplete":3,
+                                            "members":[
+                                                "BL"
+                                            ],
+                                            "percent":0,
+                                            "state":"todo"
+                                        }
+                                    ],
+                                    "todoCardsNum":4,
+                                    "trelloAndSonarMappingNum":63
+                                }
+                            ]
+                        ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+                     String boardId, String token, String key, String cardName, String desc
+            2. addExceptionCard(param1,param2,param3,param4,param5)
+                  Param:<br>
+                     - param1(Type=String): 该项目的id<br>
+                     - param2(Type=String): trello的privateToken<br>
+                     - param3(Type=String): trello的key<br>
+                     - param4(Type=String): card的名字<br>
+                     - param5(Type=String): 写在card的description上的数据<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据所报的issue为相对应的trello建立card
+    - ### TrelloData
+        - ### Function
+            1. dealWithData(param1,param2,param3)
+                  Param:<br>
+                     - param1(Type=String): 该项目的id<br>
+                     - param2(Type=String): trelloToken<br>
+                     - param3(Type=String:trelloAppkey
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     对该项目的所有List，card进行处理，为了可以像是pie图与Card List
+- ### Sentry
+    - ### Class
+        SentryPlatform<br>
+        SentryData
+    - ### SentryPlatform
+        - ### Function
+            1. dataOfChosenProject(param1,param2)
+                  Param:<br>
+                     - param1(Type=JSONArray): 所有项目的id集合<br>
+                     - param2(Type=String): Sentry的Token<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据，已经排好序
+            2. dealIssueEventData(param1)
+                  Param:<br>
+                     - param1(Type=JSONArray): 一个sentry issue事件的数据<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     对数据进行选取，并将其转化为MD形式返回
+    - ### SentryData
+        - ### Function
+
+            1. dataOfChosenProject(param1,param2,param3，param4,param5,param6,param7)
+                 Param:<br>
+                     - param1(Type=JSONObject): 用于排序的issue集合<br>
+                     - param2(Type=JSONObject): 该项目的名字与key等<br>
+                     - param3(Type=int): 选择展示功能与字段的判断位的数<br>
+                     - param4(Type=String): Sentry的Token<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+                     并返回，根据时间进行排序的issue数组
+            2. choiceField(param1,param2,param3)
+                 Param:<br>
+                     - param1(Type=int): 选择展示功能与字段的判断位的数<br>
+                     - param2(Type=HashMap<String,String>): 根据数最终得到的功能与字段的Map值<br>
+                     - param3(Type=String):项目名<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      由0-13位为字段位，14-20位为功能位
+                      根据param1中的数得到一个32位的布尔数组，再根据相对应的位映射得到相对应的名字
+
+             3. dealWithData(param1, param2,param3,param4,param5)
+                 Param:<br>
+                     - param1(Type=JSONObject): 该项目的名字与id等<br>
+                     - param2(Type=JSONObject): 一个issue的数据<br>
+                     - param3(Type=int):选择展示功能与字段的判断位的数<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      根据param2，结合choiceField函数，得到处理后的数据
+
+                      JSONArray datas,JSONArray projectIds,String sentryToken,int chosenNumber
+             4. dataOfProjects(param1, param2,param3,param4)
+                 Param:<br>
+                     - param1(Type=JSONArray): 所有的项目数据<br>
+                     - param2(Type=JSONArray): 所有项目的id集合<br>
+                     - param3(Type=String):sentry的token<br>
+                     - param3(Type=int):选择展示功能与字段的判断位的数<br>
+                 Return:<br>
+
+                    ```
+
+                    ```
+
+                 Desc:<br>
+                      得到所有项目的issue集合，并对issue集合根据时间进行排序
+
+- ### Sonar
+    - ### Class
+        SonarPlatform<br>
+        SonarData
+    - ### SonarPlatform
+        - ### Function
+            1. dataOfChosenProject(param1,param2,param3)
+                 Param:<br>
+                     - param1: User选择展示的项目<br>
+                     - param2: 所有的sonar项目的Id，Key<br>
+                     - param3(Type=String): Sonar的host<br>
+                 Return:<br>
+
+                    ```
+                        "projects":[
+                                        {
+                                            "coverage":4,
+                                            "bugs":"31",
+                                            "reliability_rating":"3",
+                                            "code_smells":"4.7K",
+                                            "duplicated_lines_density":10,
+                                            "sqale_rating":"1",
+                                            "security_rating":"2",
+                                            "vulnerabilities":"125",
+                                            "alert_status":"OK",
+                                            "projectName":"IRIS4_BCR",
+                                            "url":"http://zha-mvp-005-w7.corp.oocl.com:9000/dashboard?id=ir4.bcr"
+                                        }
+                                    ]
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+    - ### SonarData
+        - ### Function
+            1. dataOfAllProject(param1)
+                 Param:<br>
+                     - param1(Type=String): Sonar的host<br>
+                 Return:<br>
+
+                    ```
+                                        {
+                                            "coverage":4,
+                                            "bugs":"31",
+                                            "reliability_rating":"3",
+                                            "code_smells":"4.7K",
+                                            "duplicated_lines_density":10,
+                                            "sqale_rating":"1",
+                                            "security_rating":"2",
+                                            "vulnerabilities":"125",
+                                            "alert_status":"OK",
+                                            "projectName":"IRIS4_BCR",
+                                            "url":"http://zha-mvp-005-w7.corp.oocl.com:9000/dashboard?id=ir4.bcr"
+                                        }
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到所有的项目的id数据等
+            2. dataOfProjects(param1,param2)
+                 Param:<br>
+                     - param1(Type=String): Sonar的host<br>
+                     - param2(Type=JSONArray): 所有的sonar项目的Id，Key<br>
+
+                 Return:<br>
+
+                    ```
+                        "projects":[
+                                        {
+                                            "coverage":4,
+                                            "bugs":"31",
+                                            "reliability_rating":"3",
+                                            "code_smells":"4.7K",
+                                            "duplicated_lines_density":10,
+                                            "sqale_rating":"1",
+                                            "security_rating":"2",
+                                            "vulnerabilities":"125",
+                                            "alert_status":"OK",
+                                            "projectName":"IRIS4_BCR",
+                                            "url":"http://zha-mvp-005-w7.corp.oocl.com:9000/dashboard?id=ir4.bcr"
+                                        }
+                                    ]
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的数据
+
+                     dealWithData(int i,String sonarHost,JSONArray dataArray,JSONArray projectArray)
+            3. dealWithData(param1,param2,param3,param4)
+                 Param:<br>
+                     - param1(Type=int): 该项目所在所有项目的第i个<br>
+                     - param1(Type=String): Sonar的host<br>
+                     - param2(Type=JSONArray): 该sonar项目的数据<br>
+                     - param2(Type=JSONArray): 所有的sonar项目的Id，Key<br>
+
+                 Return:<br>
+
+                    ```
+                                        {
+                                            "coverage":4,
+                                            "bugs":"31",
+                                            "reliability_rating":"3",
+                                            "code_smells":"4.7K",
+                                            "duplicated_lines_density":10,
+                                            "sqale_rating":"1",
+                                            "security_rating":"2",
+                                            "vulnerabilities":"125",
+                                            "alert_status":"OK",
+                                            "projectName":"IRIS4_BCR",
+                                            "url":"http://zha-mvp-005-w7.corp.oocl.com:9000/dashboard?id=ir4.bcr"
+                                        }
+                    ```
+
+                 Desc:<br>
+                     根据已经选择的项目，得到并封装为需要展示的一个项目的数据
+
+
+## Guideline Document
+- ### Login
+- ### Trello Config
+- ### Gitlab Config
+- ### Board Setting
+
+
+

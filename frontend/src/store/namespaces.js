@@ -1,0 +1,5 @@
+export const Git = 'Git'
+export const Sonar = 'Sonar'
+export const Sentry = 'Sentry'
+export const Trello = 'Trello'
+export const Flurry = 'Flurry'

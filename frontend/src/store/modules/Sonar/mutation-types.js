@@ -1,0 +1,2 @@
+export const SAVE_SONAR_SETTING = 'SAVE_SONAR_SETTING'
+export const SET_SONAR_DATA = 'SET_SONAR_DATA'
