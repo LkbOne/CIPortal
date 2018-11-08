@@ -19,7 +19,7 @@ import java.text.ParseException;
 @Getter
 @Setter
 public class FlurryData extends Data{
-    private String name ="flurry";
+    private String name = "flurry";
     @Autowired
     DatasBeanDao datasBeanDao;
     @Autowired
@@ -36,20 +36,20 @@ public class FlurryData extends Data{
         }
     }
     public int getInterval(){
-        if(flurry==null){
+        if(flurry == null){
             return 0;
         }
         return flurry.getInterval();
     }
     public boolean setInterval(int interval){
-        if(interval!=getInterval()) {
+        if(interval != getInterval()) {
             flurry.setInterval(interval);
             flurryDao.saveAndUpdate(flurry);
         }
         return true;
     }
     public boolean calcTimeForInterval(int now) {
-        if(beforeTime==0||timeHelper.calcMinDiff(now,beforeTime) ==flurry.getInterval()){
+        if(beforeTime == 0||timeHelper.calcMinDiff(now,beforeTime) == flurry.getInterval()){
             beforeTime = now;
             return true;
         }
@@ -89,20 +89,20 @@ public class FlurryData extends Data{
         JSONObject user = JSONObject.fromObject(data);
         if(user.has("apps")){
             JSONArray projects = JSONArray.fromObject(user.getJSONArray("apps"));
-            for(int i=0;i<projects.size();i++){
+            for(int i = 0; i < projects.size(); i++){
                 JSONObject project = projects.getJSONObject(i);
                 JSONObject nameAndIdObject = new JSONObject();
                 nameAndIdObject.element(getID(),project.getString(getID()));
                 nameAndIdObject.element(getMYPROJECTNAME(),project.getString(getFROMPROJECTNAME()));
-                String platform= project.getString("platformName");
+                String platform = project.getString("platformName");
                 returnArray = dealPlatformData(nameAndIdObject,platform,returnArray);
             }
         }
         return returnArray;
     }
 
-    public JSONArray dealPlatformData(JSONObject nowData,String platformName,JSONArray returnArray){
-        for(int i=0;i<returnArray.size();i++){
+    public JSONArray dealPlatformData(JSONObject nowData, String platformName, JSONArray returnArray){
+        for(int i = 0; i < returnArray.size(); i++){
             JSONObject object = returnArray.getJSONObject(i);
             if(object.getString("platform").equals(platformName)){
                 object.getJSONArray("apps").element(nowData);

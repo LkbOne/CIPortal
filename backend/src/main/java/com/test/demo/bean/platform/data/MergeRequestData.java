@@ -26,7 +26,7 @@ import java.util.Map;
 @Setter
 @Service
 public class MergeRequestData extends GitData {
-    String name="Merge Request";
+    String name = "Merge Request";
     @Autowired
     GitLabDao gitLabDao;
     @Autowired
@@ -55,67 +55,13 @@ public class MergeRequestData extends GitData {
     private final String PROJECTIMAGE ="projectImage";
     private final String FROMPROJECTIMAGE="avatar_url";
 
-
-//    @Override
-//    public boolean getPlatformFromDb() {
-//        GitLab gitLab = gitLabDao.byName(getName());
-//        if(gitLab!=null){
-//            this.gitLab = gitLab;
-//            return true;
-//        }else{
-//            return false;
-//        }
-//    }
-//
-//    @Override
-//    public int getInterval() {
-//        if(gitLab==null){
-//            return 0;
-//        }
-//        return gitLab.getInterval();
-//    }
-//
-//    @Override
-//    public boolean setInterval(int interval) {
-//        if(interval!=getInterval()) {
-//            gitLab.setInterval(interval);
-//            gitLabDao.saveAndUpdate(gitLab);
-//        }
-//        return false;
-//    }
-//    public boolean calcTimeForInterval(int now) {
-////        logger.info("meger_now:"+timeHelper.calcMinDiff(now,beforeTime));
-//        if(beforeTime==0||timeHelper.calcMinDiff(now,beforeTime) ==gitLab.getInterval()){
-////            logger.info("meger_begin:"+timeHelper.calcMinDiff(now,beforeTime));
-//            beforeTime = now;
-//            return true;
-//        }
-//        return false;
-//    }
-
-    //需要测试 并且需要重写chosenOfChosenProject方法
     public JSONArray changeParams(JSONObject setting) throws IOException, ParseException {
-//        GitLab mergeRequest = gitLabDao.byName(getName());
-//        if(mergeRequest==null){
-//            mergeRequest = new GitLab();
-//            mergeRequest.setName("Merge Request");
-//        }
-//        JSONArray allProjects = setting.getJSONArray("allProjects");
-//        JSONArray chosenProject = setting.getJSONArray("chosenProjects");
-//        String privateToken = setting.getString("privateToken");
-//        String ip = setting.getString("ip");
-//        mergeRequest.setAllProjects(allProjects);
-//        mergeRequest.setChosenProjects(chosenProject);
-//        mergeRequest.setPrivateToken(privateToken);
-//        mergeRequest.setIp(ip);
-//        mergeRequest.setInterval(setting.getInt("interval"));
-//        gitLabDao.saveAndUpdate(mergeRequest);
-        GitLab mergeRequest =(GitLab)gitLabDao.platformFindAndUpdate(getName(),setting);
-        JSONArray newHooks= dataOfChosenProject2Hook(mergeRequest);
-        JSONArray projectImages= allProjectImage(mergeRequest);
+        GitLab mergeRequest = (GitLab)gitLabDao.platformFindAndUpdate(getName(), setting);
+        JSONArray newHooks = dataOfChosenProject2Hook(mergeRequest);
+        JSONArray projectImages = allProjectImage(mergeRequest);
         mergeRequest.setImageInSetting(projectImages);
         mergeRequest = gitLabDao.saveAndUpdate(mergeRequest);
-        if(newHooks.size()>mergeRequest.getHooksInSetting().size()){
+        if(newHooks.size() > mergeRequest.getHooksInSetting().size()){
             mergeRequest.setHooksInSetting(newHooks);
             mergeRequest = gitLabDao.saveAndUpdate(mergeRequest);
         }
@@ -125,12 +71,11 @@ public class MergeRequestData extends GitData {
     synchronized public JSONObject callDataAndSave2DataBean(String name) throws IOException, ParseException {
         GitLab gitLab = gitLabDao.byName(name);
         DatasBean datasBean = datasBeanDao.datasBeanByName(name);
-        if(datasBean==null){
+        if(datasBean == null){
             datasBean = new DatasBean();
             datasBean.setName(getName());
         }
         JSONArray returnArray = dataOfChosenProject(gitLab);
-//        datasBean.setDatas(returnArray);
          datasBean.setDatas(returnArray.toString());
         datasBeanDao.datasBeanSaveAndUpdate(datasBean);
         return statusHelper.jsonArray2Success(returnArray);
@@ -139,12 +84,12 @@ public class MergeRequestData extends GitData {
         return callDataAndSave2DataBean(name);
     }
     public JSONArray dataOfChosenProject(GitLab mergeRequest) throws IOException, ParseException {
-        JSONArray idsOfAllProject = JSONArray.fromObject(dataOfAllProject(mergeRequest.getIp(),mergeRequest.getPrivateToken()));
-        JSONArray idArrayJson = idOfChosenProject(idsOfAllProject,mergeRequest.getChosenProjects());
+        JSONArray idsOfAllProject = JSONArray.fromObject(dataOfAllProject(mergeRequest.getIp(), mergeRequest.getPrivateToken()));
+        JSONArray idArrayJson = idOfChosenProject(idsOfAllProject, mergeRequest.getChosenProjects());
         JSONArray dataArray = new JSONArray();
         for (int i = 0; i < idArrayJson.size(); i++) {
             JSONObject aData = idArrayJson.getJSONObject(i);
-            dataArray=dealWithData(aData,dataArray,mergeRequest.getIp(),mergeRequest.getPrivateToken(),216057,aData.getString("id"));
+            dataArray=dealWithData(aData, dataArray, mergeRequest.getIp(), mergeRequest.getPrivateToken(),216057,aData.getString("id"));
 //            82425
         }
         return sortAndRemoveData(dataArray);
@@ -161,66 +106,66 @@ public class MergeRequestData extends GitData {
         for (int i = 0; i < datas.size(); i++) {
             returnDatas.element(dealWithData(datas.getString(i), aProject,chosenNumber));
         }
-        if(returnDatas.size()!=0&&returnDatas.getJSONObject(0).has(getDATELASTACTIVITY())){
+        if(returnDatas.size() != 0 && returnDatas.getJSONObject(0).has(getDATELASTACTIVITY())){
             timeHelper.sortDate(returnDatas);
         }
         return returnDatas;
     }
-    public HashMap<String,String> choiceField(int choice,HashMap<String,String> chosenMap,String projectName){
+    public HashMap<String,String> choiceField(int choice, HashMap<String,String> chosenMap, String projectName){
         switch (choice){
             case 0:
-                chosenMap.put(getMERGEREQUESTID(),getID());  //1 1
+                chosenMap.put(getMERGEREQUESTID(), getID());  //1 1
                 break;
             case 1:
-                chosenMap.put(getTITLE(),getTITLE()); //0 1
+                chosenMap.put(getTITLE(), getTITLE()); //0 1
                 break;
             case 2:
-                chosenMap.put(getTIME(),getFROMCREATEDAT());//0 1
+                chosenMap.put(getTIME(), getFROMCREATEDAT());//0 1
                 break;
             case 3:
-                chosenMap.put(getTIME(),getFROMUPDATEDAT());//1 0
+                chosenMap.put(getTIME(), getFROMUPDATEDAT());//1 0
                 break;
             case 4:
-                chosenMap.put(getMYTARGETBRANCH(),getFROMTARGETBRANCH());//1 1
+                chosenMap.put(getMYTARGETBRANCH(), getFROMTARGETBRANCH());//1 1
                 break;
             case 5:
-                chosenMap.put(getMYSOURCEBRANCH(),getFROMSOURCEBRANCH());//1 1
+                chosenMap.put(getMYSOURCEBRANCH(), getFROMSOURCEBRANCH());//1 1
                 break;
             case 6:
                 chosenMap.put(getMYURL(), getFROMMURL());//1 0
                 break;
             case 7:
-                chosenMap.put(getMYAUTHORIMAGE(),getFROMAUTHORIMAGE());//1 1
+                chosenMap.put(getMYAUTHORIMAGE(), getFROMAUTHORIMAGE());//1 1
                 break;
             case 8:
-                chosenMap.put(getMYAUTHORNAME(),getFROMAUTHORNAME());//1 1
+                chosenMap.put(getMYAUTHORNAME(), getFROMAUTHORNAME());//1 1
                 break;
             case 9:
-                chosenMap.put(getMYPROJECTNAME(),projectName);//1 1
+                chosenMap.put(getMYPROJECTNAME(), projectName);//1 1
                 break;
             case 10:
                 chosenMap.put(getMYURL(), getMYURL());//0 1  110100101111111001
                 break;
             case 11:
-                chosenMap.put(getPROJECTIMAGE(),getFROMPROJECTIMAGE());//1 1
+                chosenMap.put(getPROJECTIMAGE(), getFROMPROJECTIMAGE());//1 1
                 break;
             case 12:
 
                 break;
             case 13:
-                chosenMap.put(getTIME(),getBJTIMEUTC());//0 1
+                chosenMap.put(getTIME(), getBJTIMEUTC());//0 1
                 break;
             case 14:
-                chosenMap.put(getTIME(),getBJTIME()); //1 0
+                chosenMap.put(getTIME(), getBJTIME()); //1 0
                 break;
             case 15:
-                chosenMap.put(getTIME(),getSTANDARDTIME());// 0 0
+                chosenMap.put(getTIME(), getSTANDARDTIME());// 0 0
                 break;
              case 16:
                  chosenMap.put(getSORT(),getSORT());// 1 0  timeFlag
                 break;
             case 17:
-                chosenMap.put(getTIMEFLAG(),getTIMEFLAG());// 1 0
+                chosenMap.put(getTIMEFLAG(), getTIMEFLAG());// 1 0
                 break;
             case 18:
 
@@ -236,7 +181,7 @@ public class MergeRequestData extends GitData {
         return chosenMap;
     }
 
-    public JSONObject dealWithFieldData(JSONObject aData,HashMap<String,String> chosenFieldMap,JSONObject aProject){
+    public JSONObject dealWithFieldData(JSONObject aData, HashMap<String,String> chosenFieldMap, JSONObject aProject){
         JSONObject returnObject = new JSONObject();
         Iterator it = chosenFieldMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -254,7 +199,7 @@ public class MergeRequestData extends GitData {
                 }
                 continue;
             }
-            if(entry.getKey().toString().equals(getMYAUTHORIMAGE())||entry.getKey().toString().equals(getMYAUTHORNAME())){
+            if(entry.getKey().toString().equals(getMYAUTHORIMAGE()) || entry.getKey().toString().equals(getMYAUTHORNAME())){
                 JSONObject authorData = aData.getJSONObject(getAUTHOR());
                 returnObject.element(entry.getKey().toString(),authorData.getString(entry.getValue().toString()));
                 continue;
@@ -263,33 +208,31 @@ public class MergeRequestData extends GitData {
         }
         return returnObject;
     }
-    public JSONObject dealWithMessageFieldData(JSONObject aData,HashMap<String,String> chosenFieldMap){
-       //logger.info("chosenFieldMap:"+chosenFieldMap);
+    public JSONObject dealWithMessageFieldData(JSONObject aData, HashMap<String,String> chosenFieldMap){
         JSONObject returnObject = new JSONObject();
         Iterator it = chosenFieldMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             if(entry.getKey().toString().equals(getMYPROJECTNAME())){
-                returnObject.element(entry.getKey().toString(),entry.getValue().toString());
+                returnObject.element(entry.getKey().toString(), entry.getValue().toString());
                 continue;
             }
-            if(entry.getKey().toString().equals(getMYAUTHORIMAGE())||entry.getKey().toString().equals(getMYAUTHORNAME())){
+            if(entry.getKey().toString().equals(getMYAUTHORIMAGE()) || entry.getKey().toString().equals(getMYAUTHORNAME())){
                 JSONObject authorData = aData.getJSONObject(getUSER());
-                returnObject.element(entry.getKey().toString(),authorData.getString(entry.getValue().toString()));
+                returnObject.element(entry.getKey().toString(), authorData.getString(entry.getValue().toString()));
                 continue;
             }else{
 
-                JSONObject  objectAttributesData= aData.getJSONObject(getOBJECTATTRIBUTES());
-                returnObject.element(entry.getKey().toString(),objectAttributesData.getString(entry.getValue().toString()));
+                JSONObject  objectAttributesData = aData.getJSONObject(getOBJECTATTRIBUTES());
+                returnObject.element(entry.getKey().toString(), objectAttributesData.getString(entry.getValue().toString()));
             }
-           // returnObject.element(entry.getKey().toString(),aData.getString(entry.getValue().toString()));
         }
         return returnObject;
     }
 
 
 
-    public JSONObject dealWithMergeStatus(JSONObject aData,JSONObject myData){
+    public JSONObject dealWithMergeStatus(JSONObject aData, JSONObject myData){
         if(aData.has(getOBJECTATTRIBUTES())){
             aData = aData.getJSONObject(getOBJECTATTRIBUTES());
         }
@@ -314,26 +257,26 @@ public class MergeRequestData extends GitData {
         return data;
     }
     //之后要删除
-    public JSONObject addProjectID(JSONObject datas,JSONObject project){
+    public JSONObject addProjectID(JSONObject datas, JSONObject project){
         datas.element("id",project.getString("id"));
         return datas;
     }
-    public JSONObject dealWithData(String mergeRequestsData, JSONObject aProject,int chosenNumber) throws ParseException {
+    public JSONObject dealWithData(String mergeRequestsData, JSONObject aProject, int chosenNumber) throws ParseException {
         JSONObject aData = JSONObject.fromObject(mergeRequestsData);
-        HashMap<String,String>  chosenFieldMap = dealWithChosenField(1,chosenNumber,aProject.getString(getFROMPROJECTNAME()),0,13);
-        HashMap<String,String>  chosenFunctionMap = dealWithChosenFunction(1,chosenNumber,aProject.getString(getFROMPROJECTNAME()),10,getFIELDLENGTH());
-        return removeData(dealWithMergeStatus(aData,dealWithFunctionData(addProjectID(dealWithFieldData(aData,chosenFieldMap,aProject),aProject),chosenFunctionMap)));
+        HashMap<String,String> chosenFieldMap = dealWithChosenField(1, chosenNumber, aProject.getString(getFROMPROJECTNAME()),0,13);
+        HashMap<String,String> chosenFunctionMap = dealWithChosenFunction(1, chosenNumber, aProject.getString(getFROMPROJECTNAME()),10,getFIELDLENGTH());
+        return removeData(dealWithMergeStatus(aData,dealWithFunctionData(addProjectID(dealWithFieldData(aData, chosenFieldMap,aProject),aProject), chosenFunctionMap)));
     }
     public JSONObject dealWithHookMessage(JSONObject aData,String projectName,int chosenNumber) throws ParseException {
-        HashMap<String,String>  chosenFieldMap = dealWithChosenField(1,chosenNumber,projectName,0,13);
-        HashMap<String,String>  chosenFunctionMap = dealWithChosenFunction(1,chosenNumber,projectName,13,getFIELDLENGTH());
-        return addEventType(removeData(dealWithMergeStatus(aData,dealWithFunctionData(dealWithMessageFieldData(aData,chosenFieldMap),chosenFunctionMap))));
+        HashMap<String,String> chosenFieldMap = dealWithChosenField(1, chosenNumber, projectName,0,13);
+        HashMap<String,String> chosenFunctionMap = dealWithChosenFunction(1, chosenNumber, projectName,13, getFIELDLENGTH());
+        return addEventType(removeData(dealWithMergeStatus(aData, dealWithFunctionData(dealWithMessageFieldData(aData,chosenFieldMap),chosenFunctionMap))));
     }
     public JSONObject addEventType(JSONObject data){
-        return data.element(getEVENTTYPE(),getMERGEREQUEST());
+        return data.element(getEVENTTYPE(), getMERGEREQUEST());
     }
     public JSONArray dateLastActivity(JSONArray datas){
-        for(int i=0;i<datas.size();i++){
+        for(int i = 0; i < datas.size(); i++){
             JSONObject data = datas.getJSONObject(i);
             data.remove(getDATELASTACTIVITY());
             datas.element(i,data);

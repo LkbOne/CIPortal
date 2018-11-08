@@ -22,8 +22,8 @@ import java.text.ParseException;
 @Component
 @ToString
 public class TrelloData extends Data {
-    private String name="Trello";
-    private final String MYURL ="url";
+    private String name = "Trello";
+    private final String MYURL = "url";
     @Autowired
     TrelloDao trelloDao;
     @Autowired
@@ -35,7 +35,7 @@ public class TrelloData extends Data {
     public boolean getPlatformFromDb(){
 
         Trello trello = trelloDao.byName(getName());
-        if(trello!=null){
+        if(trello != null){
             this.trello = trello;
             return true;
         }else{
@@ -44,50 +44,45 @@ public class TrelloData extends Data {
     }
     public int getInterval(){
 
-        if(trello==null){
+        if(trello == null){
             return 0;
         }
         return trello.getInterval();
     }
     public boolean setInterval(int interval){
-        if(interval!=getInterval()) {
+        if(interval != getInterval()) {
             trello.setInterval(interval);
             trelloDao.saveAndUpdate(trello);
         }
         return true;
     }
-
     public boolean calcTimeForInterval(int now) {
-        if(beforeTime==0||timeHelper.calcMinDiff(now,beforeTime) ==trello.getInterval()){
+        if(beforeTime == 0 || timeHelper.calcMinDiff(now,beforeTime) == trello.getInterval()){
             beforeTime = now;
             return true;
         }
         return false;
     }
-
     @Override
     public JSONArray comfirmBaseAuthorityAndGetCheckBoxData(String token) throws IOException {
         return null;
     }
-
-    public JSONArray comfirmBaseAuthorityAndGetCheckBoxData(String trelloToken,String trelloAppkey) throws IOException {
-        return projects(dataOfAllProject(trelloAppkey,trelloToken));
+    public JSONArray comfirmBaseAuthorityAndGetCheckBoxData(String trelloToken, String trelloAppkey) throws IOException {
+        return projects(dataOfAllProject(trelloAppkey, trelloToken));
     }
-
-
-    public String dataOfAllProject(String trelloAppkey,String trelloToken) throws IOException {
+    public String dataOfAllProject(String trelloAppkey, String trelloToken) throws IOException {
         String data = trelloHttpClient.httpClientGetUilt(trelloHttpClient.dealUrl("ALLPROJECTS", "", trelloToken, trelloAppkey, "", "", "", ""));
         return data;
     }
     public JSONArray projects(String data) {
         JSONArray projects = JSONArray.fromObject(data);
         JSONArray nameAndIdArray = new JSONArray();
-        for(int i=0;i<projects.size();i++){
+        for(int i = 0;i < projects.size(); i++){
             JSONObject project = projects.getJSONObject(i);
             JSONObject nameAndIdObject = new JSONObject();
-            nameAndIdObject.element(getID(),project.getString(getID()));
-            nameAndIdObject.element(getMYPROJECTNAME(),project.getString(getFROMPROJECTNAME()));
-            nameAndIdObject.element(getMYURL(),project.getString(getMYURL()));
+            nameAndIdObject.element(getID(), project.getString(getID()));
+            nameAndIdObject.element(getMYPROJECTNAME(), project.getString(getFROMPROJECTNAME()));
+            nameAndIdObject.element(getMYURL(), project.getString(getMYURL()));
             nameAndIdArray.element(nameAndIdObject);
         }
         return nameAndIdArray;
@@ -95,7 +90,7 @@ public class TrelloData extends Data {
     public JSONObject callDataAndSave2DataBean(String name) throws IOException, ParseException {
         Trello trello = trelloDao.byName(name);
         DatasBean datasBean = datasBeanDao.datasBeanByName(name);
-        if(datasBean==null){
+        if(datasBean == null){
             datasBean = new DatasBean();
             datasBean.setName(getName());
         }
@@ -104,52 +99,42 @@ public class TrelloData extends Data {
         datasBeanDao.datasBeanSaveAndUpdate(datasBean);
         return statusHelper.jsonArray2Success(returnArray);
     }
-
     public JSONObject socketGate(String name) throws IOException, ParseException {
         return callDataAndSave2DataBean(name);
     }
-
-
     @Override
     public String dataOfAllProject(String code) throws IOException {
         return null;
     }
-
-    //需要测试
-    //
     public JSONArray changeParams(JSONObject setting) throws IOException, ParseException {
         JSONArray trelloData = dataOfChosenProject(trelloDao.platformFindAndUpdate(getName(),setting));
         datasBeanDao.datasBeanFindAndUpdate(getName(),trelloData);
         return trelloData;
     }
     public JSONArray dataOfChosenProject(Platforms platforms) throws JSONException, IOException, ParseException {
-        //如果存在某些人去删除了项目，但是没有按搜索键，那么就会报错，因为也是从DB拿的旧数据
-        //如果这个操作去执行，还要保存到 platform table中，那么就会导致出现"脏数据"的情况，就是保存到了AllProjects
-        //而且后台刷新到了 allproject的更改，应该给frontend一个提醒才对
         Trello trello = (Trello) platforms;
-        JSONArray idsOfAllProject = JSONArray.fromObject(dataOfAllProject(trello.getAppKey(),trello.getPrivateToken()));
-        JSONArray idArrayJson = idOfChosenProject(idsOfAllProject,trello.getChosenProjects());
+        JSONArray idsOfAllProject = JSONArray.fromObject(dataOfAllProject(trello.getAppKey(), trello.getPrivateToken()));
+        JSONArray idArrayJson = idOfChosenProject(idsOfAllProject, trello.getChosenProjects());
         JSONArray projects = new JSONArray();
         for (int i = 0; i < idArrayJson.size(); i++) {
             JSONObject idObjectJson = idArrayJson.getJSONObject(i);
-            JSONObject oneProject = dealWithData(idObjectJson.getString("id"),trello.getPrivateToken(),trello.getAppKey());
+            JSONObject oneProject = dealWithData(idObjectJson.getString("id"), trello.getPrivateToken(), trello.getAppKey());
             oneProject.element("id", idObjectJson.getString("id"));
-//            oneProject.element("projectName", idObjectJson.getString("projectName"));
             oneProject.element("projectName", idObjectJson.getString(getFROMPROJECTNAME()));
             oneProject.element("broadUrl", idObjectJson.getString("url"));
-            oneProject.element("sonarData",new JSONObject());
+            oneProject.element("sonarData", new JSONObject());
             projects.element(oneProject);
         }
         return projects;
     }
     public JSONObject initStateObjectAndArray(){
         JSONObject stateObjectAndArray = new JSONObject();
-        stateObjectAndArray.element("bug",new JSONArray());
-        stateObjectAndArray.element("todo",new JSONArray());
-        stateObjectAndArray.element("todoCount",0);
+        stateObjectAndArray.element("bug", new JSONArray());
+        stateObjectAndArray.element("todo", new JSONArray());
+        stateObjectAndArray.element("todoCount", 0);
         return stateObjectAndArray;
     }
-    public JSONObject dealWithData(String id,String trelloToken, String trelloAppkey) throws IOException, ParseException {
+    public JSONObject dealWithData(String id, String trelloToken, String trelloAppkey) throws IOException, ParseException {
         JSONArray lists = JSONArray.fromObject(trelloHttpClient.httpClientGetUilt(trelloHttpClient.dealUrl("AllCARDS", id, trelloToken, trelloAppkey, "", "", "", "")));
         JSONObject stateObjectAndArray = initStateObjectAndArray();
         JSONObject aProject = new JSONObject();
@@ -191,22 +176,22 @@ public class TrelloData extends Data {
         }
         return allTodoList;
     }
-    public JSONObject dealTestDoneList(JSONArray cards,JSONObject aProject){
+    public JSONObject dealTestDoneList(JSONArray cards, JSONObject aProject){
         return aProject.element("testCardsNum", cards.size());
     }
-    public JSONObject dealDevDoneList(JSONArray cards,JSONObject aProject){
+    public JSONObject dealDevDoneList(JSONArray cards, JSONObject aProject){
         return aProject.element("doneCardsNum", cards.size());
     }
-    public JSONObject dealList2TodoList(JSONArray cards,JSONObject stateObjectAndArray,String trelloToken, String trelloAppkey) throws IOException, ParseException {
+    public JSONObject dealList2TodoList(JSONArray cards, JSONObject stateObjectAndArray, String trelloToken, String trelloAppkey) throws IOException, ParseException {
         for (int i = 0; i < cards.size(); i++) {
-           JSONObject aCard = dealACard(cards.getJSONObject(i),trelloToken,trelloAppkey);
-           if(aCard.getDouble("all")!=0||aCard.getString("state").equals("bug")){
-               stateObjectAndArray = addAcard2Object(aCard.getString("state"),aCard,stateObjectAndArray);
+           JSONObject aCard = dealACard(cards.getJSONObject(i), trelloToken, trelloAppkey);
+           if(aCard.getDouble("all") != 0 || aCard.getString("state").equals("bug")){
+               stateObjectAndArray = addAcard2Object(aCard.getString("state"), aCard, stateObjectAndArray);
            }
         }
         return stateObjectAndArray;
     }
-    public JSONObject dealACard(JSONObject aCard,String trelloToken, String trelloAppkey) throws ParseException, IOException {
+    public JSONObject dealACard(JSONObject aCard, String trelloToken, String trelloAppkey) throws ParseException, IOException {
         JSONObject tempCard = new JSONObject();
         tempCard.element("dateLastActivity", timeHelper.dealWithTimeAndDiff(aCard.getString("dateLastActivity"),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         tempCard.element("cardName", aCard.getString("name"));
@@ -219,13 +204,13 @@ public class TrelloData extends Data {
         tempCard.element("incomplete", incompleteNum);
         tempCard.element("complete", completeNum);
         tempCard.element("all", all);
-        tempCard.element("percent", calcPacent(completeNum,all));
-        tempCard.element("members", dealMembers(aCard,trelloToken,trelloAppkey));
+        tempCard.element("percent", calcPacent(completeNum, all));
+        tempCard.element("members", dealMembers(aCard,trelloToken, trelloAppkey));
         return tempCard;
     }
-    public JSONObject addAcard2Object(String bugFlag,JSONObject aCard,JSONObject stateObjectAndArray){
+    public JSONObject addAcard2Object(String bugFlag, JSONObject aCard, JSONObject stateObjectAndArray){
         stateObjectAndArray.getJSONArray(bugFlag).element(aCard);
-        stateObjectAndArray.element("todoCount",stateObjectAndArray.getInt("todoCount")+1);
+        stateObjectAndArray.element("todoCount", stateObjectAndArray.getInt("todoCount") + 1);
         return stateObjectAndArray;
     }
     public JSONArray dealMembers(JSONObject aCard, String trelloToken, String trelloAppkey) throws IOException {
@@ -244,9 +229,9 @@ public class TrelloData extends Data {
     }
     public String addPercentWord2Num(double answear){
         DecimalFormat df = new DecimalFormat("#0.0");
-        return df.format(answear)+"%";
+        return df.format(answear) + "%";
     }
-    public double calcPacent(double part,double all){
+    public double calcPacent(double part, double all){
         return  all <= 0 ? 0 : (Math.round(part * 10000 / all) / 100.00);
     }
     public String comfirmHaveBug(JSONArray labels) throws JSONException {
@@ -258,12 +243,6 @@ public class TrelloData extends Data {
         }
         return "todo";
     }
-
-
-
-
-
-
     public String addList(String boardId, String token, String key) throws IOException, JSONException {
         return trelloHttpClient.httpClientPostUilt(trelloHttpClient.dealUrl("ADDLIST", boardId, token, key, "", "", "", ""));
     }
@@ -286,8 +265,6 @@ public class TrelloData extends Data {
         }
         return false;
     }
-
-
     public boolean addExceptionCard(String boardId,String cardName, String desc) throws IOException, JSONException {
         String token = trello.getPrivateToken();
         String key = trello.getAppKey();

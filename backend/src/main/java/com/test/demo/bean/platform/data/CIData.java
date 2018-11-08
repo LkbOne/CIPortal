@@ -49,60 +49,8 @@ public class CIData extends GitData {
     private final String PIPELINE ="pipeline";
     private final String PROJECTID ="projectId";
     private final String BJTIMEUTC = "beijingUTC";
-    //    //需要测试 并且需要重写chosenOfChosenProject方法
-//    @Override
-//    public boolean getPlatformFromDb() {
-//        GitLab gitLab = gitLabDao.byName(getName());
-//        if(gitLab!=null){
-//            this.gitLab = gitLab;
-//            return true;
-//        }else{
-//            return false;
-//        }
-//    }
-//
-//    @Override
-//    public int getInterval() {
-//        if(gitLab==null){
-//            return 0;
-//        }
-//        return gitLab.getInterval();
-//    }
-//
-//    @Override
-//    public boolean setInterval(int interval) {
-//        if(interval!=getInterval()) {
-//            gitLab.setInterval(interval);
-//            gitLabDao.saveAndUpdate(gitLab);
-//        }
-//        return false;
-//    }
-//
-//    public boolean calcTimeForInterval(int now) {
-//        if(beforeTime==0||timeHelper.calcMinDiff(now,beforeTime) ==gitLab.getInterval()){
-//            beforeTime = now;
-//            return true;
-//        }
-//        return false;
-//    }
-
 
     synchronized public JSONArray changeParams(JSONObject setting) throws IOException, ParseException {
-//        GitLab CITesting = gitLabDao.byName(getName());
-//        if(CITesting==null){
-//            CITesting = new GitLab();
-
-//        }
-//        JSONArray allProjects = setting.getJSONArray("allProjects");
-//        JSONArray chosenProject = setting.getJSONArray("chosenProjects");
-//        String privateToken = setting.getString("privateToken");
-//        String ip = setting.getString("ip");
-//        CITesting.setAllProjects(allProjects);
-//        CITesting.setChosenProjects(chosenProject);
-//        CITesting.setPrivateToken(privateToken);
-//        CITesting.setIp(ip);
-//        CITesting.setInterval(setting.getInt("interval"));
-//        gitLabDao.saveAndUpdate(CITesting);
         GitLab ciData =(GitLab)gitLabDao.platformFindAndUpdate(getName(),setting);
         JSONArray newHooks= dataOfChosenProject2Hook(ciData);
         JSONArray projectImages= allProjectImage(ciData);

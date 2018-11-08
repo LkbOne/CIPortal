@@ -60,18 +60,18 @@ public class GitData extends Data{
     protected GitlabPlatformHttpClientHelper gitlabHttpClientHelper = new GitlabPlatformHttpClientHelper();
     private Logger logger = Logger.getLogger(Data.class);
     protected TimeHelper timeHelper = new TimeHelper();
-    public String dataOfAllProject(String gitIp,String gitPrivateToken) throws IOException {
+    public String dataOfAllProject(String gitIp, String gitPrivateToken) throws IOException {
         return gitlabHttpClientHelper.httpClientGetUilt(gitlabHttpClientHelper.dealUrl("ALLGITPROJECT", gitIp, "", ""), gitPrivateToken);
     }
 
     public JSONArray sortAndRemoveData(JSONArray dataArray){
-        if(dataArray.size()!=0&&dataArray.getJSONObject(0).has(getDATELASTACTIVITY())){
+        if(dataArray.size() != 0 && dataArray.getJSONObject(0).has(getDATELASTACTIVITY())){
             dataArray = dateLastActivity(timeHelper.sortDate(dataArray));
         }
         return dataArray;
     }
     public JSONArray dateLastActivity(JSONArray datas){
-        for(int i=0;i<datas.size();i++){
+        for(int i = 0; i < datas.size(); i++){
             JSONObject data = datas.getJSONObject(i);
             data.remove(getDATELASTACTIVITY());
             datas.element(i,data);
@@ -81,7 +81,7 @@ public class GitData extends Data{
     public JSONArray dataOfChosenProject(JSONObject aProject, JSONArray returnDatas, int showNumber, String gitIp, String gitPrivateToken, int chosenNumber, String projectId) throws IOException, ParseException {
         return null;
     }
-    public JSONObject dealWithFunctionData(JSONObject myData,HashMap<String,String> chosenFieldMap) throws ParseException {
+    public JSONObject dealWithFunctionData(JSONObject myData, HashMap<String,String> chosenFieldMap) throws ParseException {
         if(chosenFieldMap.containsKey(getTIME())){
             myData=timeData(getMYUPDATEDAT(),getTIME(),chosenFieldMap.get(getTIME()),myData);
         }
@@ -93,25 +93,23 @@ public class GitData extends Data{
         }
         return myData;
     }
-    public JSONObject timeDiff(String from,JSONObject myObject) throws ParseException {
-        //logger.info("timeData："+myObject);
+    public JSONObject timeDiff(String from, JSONObject myObject) throws ParseException {
         myObject.element(getDATELASTACTIVITY(), timeHelper.dealWithTimeAndDiff(myObject.getString(from),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         return myObject;
     }
-    public JSONObject timeFlag(String from,JSONObject myObject) throws ParseException {
+    public JSONObject timeFlag(String from, JSONObject myObject) throws ParseException {
         int interval = Integer.valueOf(timeHelper.dealWithTimeAndDiff(myObject.getString(from),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-        if(interval>=60*60*24) {
+        if(interval >= 60*60*24) {
             myObject.element(getTIMEFLAG(),false);
         }else{
             myObject.element(getTIMEFLAG(),true);
         }
         return myObject;
     }
-    public JSONObject timeData(String my,String from,String choice,JSONObject myObject) throws ParseException {
+    public JSONObject timeData(String my, String from, String choice, JSONObject myObject) throws ParseException {
         if(choice.equals(getSTANDARDTIME())){
             myObject.element(my, myObject.getString(from));
         }else if(choice.equals(getBJTIME())){
-
             myObject.element(my, timeHelper.time2GMT8(myObject.getString(from),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
         }else if(choice.equals(getBJTIMEUTC())){
             myObject.element(my, timeHelper.time2GMT8(myObject.getString(from),"yyyy-MM-dd HH:mm:ss 'UTC'"));
@@ -122,7 +120,6 @@ public class GitData extends Data{
 
     @Override
     public boolean getPlatformFromDb() {
-        System.out.println("name111111:"+getName());
         GitLab gitLab = gitLabDao.byName(getName());
         if(gitLab!=null){
             this.gitLab = gitLab;
@@ -134,7 +131,7 @@ public class GitData extends Data{
 
     @Override
     public int getInterval() {
-        if(gitLab==null){
+        if(gitLab == null){
             return 0;
         }
         return gitLab.getInterval();
@@ -142,16 +139,14 @@ public class GitData extends Data{
 
     @Override
     public boolean setInterval(int interval) {
-        if(interval!=getInterval()) {
+        if(interval != getInterval()) {
             gitLab.setInterval(interval);
             gitLabDao.saveAndUpdate(gitLab);
         }
         return false;
     }
     public boolean calcTimeForInterval(int now) {
-//        logger.info("meger_now:"+timeHelper.calcMinDiff(now,beforeTime));
-        if(beforeTime==0||timeHelper.calcMinDiff(now,beforeTime) ==gitLab.getInterval()){
-//            logger.info("meger_begin:"+timeHelper.calcMinDiff(now,beforeTime));
+        if(beforeTime == 0 || timeHelper.calcMinDiff(now,beforeTime) == gitLab.getInterval()){
             beforeTime = now;
             return true;
         }
@@ -164,8 +159,8 @@ public class GitData extends Data{
     }
 
 
-    public JSONArray comfirmBaseAuthorityAndGetCheckBoxData(String gitIp,String gitPrivateToken) throws IOException {
-        return projects(dataOfAllProject(gitIp,gitPrivateToken));
+    public JSONArray comfirmBaseAuthorityAndGetCheckBoxData(String gitIp, String gitPrivateToken) throws IOException {
+        return projects(dataOfAllProject(gitIp, gitPrivateToken));
     }
 
     @Override
@@ -193,12 +188,12 @@ public class GitData extends Data{
         return null;
     }
    public JSONArray dataOfChosenProject2Hook(GitLab gitLab) throws IOException {
-        return addHook(comfirmHook(gitLab),gitLab);
+        return addHook(comfirmHook(gitLab), gitLab);
     }
 
     public JSONObject dataOfSendMessage(String data) throws ParseException {
         JSONObject sendJson = JSONObject.fromObject(data);
-        if(sendJson.has("object_kind")&&sendJson.getString("object_kind").equals("merge_request")) {
+        if(sendJson.has("object_kind") && sendJson.getString("object_kind").equals("merge_request")) {
             return mergeRequestData.dealWithHookMessage(sendJson,"",12215);//12215 10167
         }else if(sendJson.has("object_kind")&&sendJson.getString("object_kind").equals("pipeline")){
             return ciData.dealWithHookMessage(sendJson,"",18343);
@@ -208,22 +203,22 @@ public class GitData extends Data{
     public JSONArray comfirmHook(GitLab gitLab){
         JSONArray projectIds = gitLab.getChosenProjects();
         JSONArray hookArray = gitLab.getHooksInSetting();
-        List<Integer> projectIdsTemp =new ArrayList<>();
+        List<Integer> projectIdsTemp = new ArrayList<>();
         JSONArray hookTemp = new JSONArray();
-        for(int i=0;i<projectIds.size();i++){
+        for(int i = 0; i < projectIds.size(); i++){
             projectIdsTemp.add(i);
         }
-        for(int i=0;i<projectIds.size();i++){
-            for(int j=0;j<hookArray.size();j++){
+        for(int i = 0; i < projectIds.size(); i++){
+            for(int j = 0; j < hookArray.size(); j++){
                 JSONObject aHook = hookArray.getJSONObject(j);
                 if(aHook.getString(getID()).equals(projectIds.getString(i))){
-                    projectIdsTemp.set(i,-1);
+                    projectIdsTemp.set(i, -1);
                     break;
                 }
             }
         }
-        for(int i=0;i<projectIdsTemp.size();i++){
-            if(projectIdsTemp.get(i)!=-1) {
+        for(int i = 0; i < projectIdsTemp.size(); i++){
+            if(projectIdsTemp.get(i) != -1) {
                 hookTemp.element(projectIds.get(projectIdsTemp.get(i)));
             }
         }
@@ -246,9 +241,9 @@ public class GitData extends Data{
         JSONArray idsOfAllProject = JSONArray.fromObject(dataOfAllProject(mergeRequest.getIp(),mergeRequest.getPrivateToken()));
         JSONArray ids =mergeRequest.getChosenProjects();
         JSONArray returnArray = new JSONArray();
-        for(int i=0;i<ids.size();i++){
-            String id =ids.getString(i);
-            for(int j=0;j<idsOfAllProject.size();j++){
+        for(int i = 0 ; i < ids.size(); i++){
+            String id = ids.getString(i);
+            for(int j = 0; j < idsOfAllProject.size(); j++){
                 JSONObject project = idsOfAllProject.getJSONObject(j);
                 if(project.getString("id").equals(id)){
                     JSONObject object = new JSONObject();

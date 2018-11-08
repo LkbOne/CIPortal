@@ -26,7 +26,7 @@ public class EventLogData extends FlurryData {
     public JSONObject callDataAndSave2DataBean(String name) throws IOException {
         Flurry flurry = flurryDao.byName(name);
         DatasBean datasBean = datasBeanDao.datasBeanByName(name);
-        if(datasBean==null){
+        if(datasBean == null){
             datasBean = new DatasBean();
             datasBean.setName(name);
         }
@@ -36,7 +36,6 @@ public class EventLogData extends FlurryData {
         return statusHelper.jsonArray2Success(returnArray);
     }
     public  JSONArray dataOfChosenProject(Platforms platforms) throws IOException {
-        System.out.println("1");
         Flurry flurry = (Flurry) platforms;
         JSONArray returnArray = new JSONArray();
         JSONObject flurryOfUserData = JSONObject.fromObject(dataOfAllProject(flurry.getPrivateToken()));
@@ -53,12 +52,9 @@ public class EventLogData extends FlurryData {
         }
         return returnArray;
     }
-//    public String changeDot2Line(String version){
-//        return version.replace(".","-");
-//    }
     public JSONArray dealWithData(JSONArray aProjectData){
         JSONArray returnArray = new JSONArray();
-        for(int i=0;i<aProjectData.size();i++){
+        for (int i = 0; i < aProjectData.size(); i++){
             JSONObject object = new JSONObject();
             JSONObject aDevice = aProjectData.getJSONObject(i);
             object.element("deviceModel",aDevice.getString("deviceModel"));
@@ -74,7 +70,7 @@ public class EventLogData extends FlurryData {
     }
     public JSONArray dealDofOfEvent(JSONArray events){
         JSONArray returnArray = new JSONArray();
-        for(int i=0;i<events.size();i++){
+        for(int i = 0; i < events.size(); i++){
             JSONObject aEvent = events.getJSONObject(i);
             JSONObject returnObject = new JSONObject();
             returnObject.element("name",aEvent.getString("name"));
