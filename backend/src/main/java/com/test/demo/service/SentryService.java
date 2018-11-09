@@ -24,15 +24,8 @@ public class SentryService extends ApiService{
         JSONObject bodyObject = JSONObject.fromObject(body);
         String name = bodyObject.getString("name");
         String privateToken = bodyObject.getString("privateToken");
-        return statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name,sentryData.comfirmBaseAuthorityAndGetCheckBoxData(privateToken)));
+        return statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name, sentryData.comfirmBaseAuthorityAndGetCheckBoxData(privateToken)));
     }
-//    public boolean deleteIssue(String url,String authorization) throws IOException, JSONException {
-//        JSONObject responseBody = JSONObject.fromObject(sentryHttpClientHelper.httpClientDeleteUilt(url,authorization));
-//        if(responseBody.getString("status").equals("200")){
-//            return true;
-//        }
-//        return false;
-//    }
     public JSONObject initCallApi(String body) throws IOException, ParseException {
         JSONObject bodyObject = JSONObject.fromObject(body);
         String name = bodyObject.getString("name");
@@ -40,19 +33,17 @@ public class SentryService extends ApiService{
         JSONArray allProjects = sentryData.comfirmBaseAuthorityAndGetCheckBoxData(privateToken);
         JSONArray chosenProjects = getIdArray(allProjects);
         JSONObject setting = new JSONObject();
-        setting.element("privateToken",privateToken);
-        setting.element("allProjects",allProjects);
-        setting.element("chosenProjects",chosenProjects);
-        setting.element("interval",initInterval);
+        setting.element("privateToken", privateToken);
+        setting.element("allProjects", allProjects);
+        setting.element("chosenProjects", chosenProjects);
+        setting.element("interval", initInterval);
         if(name.equals("")){
-            setting.element("name","Sentry");
-            userService.toSetting(adminAcount,setting.toString());
-
+            setting.element("name", "Sentry");
+            userService.toSetting(adminAcount, setting.toString());
         }
         return statusHelper.onlySuccess();
     }
     public JSONObject dispelBug(){
         return sentryData.dispelBug();
     }
-
 }

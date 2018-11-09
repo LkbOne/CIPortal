@@ -32,7 +32,7 @@ public class GitlabService extends ApiService{
         String name = bodyObject.getString("name");
         String privateToken = bodyObject.getString("privateToken");
         String ip = bodyObject.getString("ip");
-        JSONObject object= statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name,gitData.comfirmBaseAuthorityAndGetCheckBoxData(ip,privateToken)));
+        JSONObject object= statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name, gitData.comfirmBaseAuthorityAndGetCheckBoxData(ip, privateToken)));
         return object;
     }
     public JSONObject initCallApi(String body) throws IOException, ParseException {
@@ -40,34 +40,31 @@ public class GitlabService extends ApiService{
         String name = bodyObject.getString("name");
         String privateToken = bodyObject.getString("privateToken");
         String ip = bodyObject.getString("ip");
-
-        JSONArray allProjects = gitData.comfirmBaseAuthorityAndGetCheckBoxData(ip,privateToken);
+        JSONArray allProjects = gitData.comfirmBaseAuthorityAndGetCheckBoxData(ip, privateToken);
         JSONArray chosenProjects = getIdArray(allProjects);
         JSONObject setting = new JSONObject();
-        setting.element("privateToken",privateToken);
-        setting.element("ip",ip);
-        setting.element("allProjects",allProjects);
-        setting.element("chosenProjects",chosenProjects);
-        setting.element("interval",initInterval);
+        setting.element("privateToken", privateToken);
+        setting.element("ip", ip);
+        setting.element("allProjects", allProjects);
+        setting.element("chosenProjects", chosenProjects);
+        setting.element("interval", initInterval);
         if(name.equals("")){
-            setting.element("name","Merge Request");
-            userService.toSetting(adminAcount,setting.toString());
-            setting.element("name","CI Testing");
-            userService.toSetting(adminAcount,setting.toString());
-
+            setting.element("name", "Merge Request");
+            userService.toSetting(adminAcount, setting.toString());
+            setting.element("name", "CI Testing");
+            userService.toSetting(adminAcount, setting.toString());
         }
         return statusHelper.onlySuccess();
     }
-    public void sendAndComfirm(String account,String data) throws ParseException, IOException {
+    public void sendAndComfirm(String account, String data) throws ParseException, IOException {
         User user = userDaoImp.userByAccount(account);
-        JSONObject jsonObject= gitData.dataOfSendMessage(data);
-        if(jsonObject.size()!=0) {
-            JSONObject object =statusHelper.addBugStatusForArray(comfirmNew(user, jsonObject));
+        JSONObject jsonObject = gitData.dataOfSendMessage(data);
+        if(jsonObject.size() != 0) {
+            JSONObject object = statusHelper.addBugStatusForArray(comfirmNew(user, jsonObject));
             WebSockets.sendMessageAll(object.toString());
-
         }
     }
-    public JSONArray comfirmNew(User user,JSONObject jsonObject){
+    public JSONArray comfirmNew(User user, JSONObject jsonObject){
         JSONArray jsonArray = new JSONArray();
         if(jsonObject.getString("eventType").equals("mergeRequest")) {
             jsonArray = user.getMergeRequestData();

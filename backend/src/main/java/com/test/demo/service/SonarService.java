@@ -24,24 +24,22 @@ public class SonarService extends ApiService{
         JSONObject bodyObject = JSONObject.fromObject(body);
         String name = bodyObject.getString("name");
         String host = bodyObject.getString("host");
-        return statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name,sonarData.comfirmBaseAuthorityAndGetCheckBoxData(host)));
+        return statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name, sonarData.comfirmBaseAuthorityAndGetCheckBoxData(host)));
     }
     public JSONObject initCallApi(String body) throws IOException, ParseException {
         JSONObject bodyObject = JSONObject.fromObject(body);
         String name = bodyObject.getString("name");
         String host = bodyObject.getString("host");
-
         JSONArray allProjects = sonarData.comfirmBaseAuthorityAndGetCheckBoxData(host);
         JSONArray chosenProjects = getIdArray(allProjects);
         JSONObject setting = new JSONObject();
-        setting.element("host",host);
-        setting.element("allProjects",allProjects);
-        setting.element("chosenProjects",chosenProjects);
-        setting.element("interval",initInterval);
+        setting.element("host", host);
+        setting.element("allProjects", allProjects);
+        setting.element("chosenProjects", chosenProjects);
+        setting.element("interval", initInterval);
         if(name.equals("")){
-            setting.element("name","Sonar");
-            userService.toSetting(adminAcount,setting.toString());
-
+            setting.element("name", "Sonar");
+            userService.toSetting(adminAcount, setting.toString());
         }
         return statusHelper.onlySuccess();
     }

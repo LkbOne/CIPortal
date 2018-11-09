@@ -9,11 +9,11 @@ import java.text.ParseException;
 
 public abstract class ApiService {
     Logger logger = Logger.getLogger(ApiService.class);
-    String adminAcount="admin";
+    String adminAcount = "admin";
     int initInterval = 5;
     JSONArray getIdArray(JSONArray allProject){
         JSONArray array = new JSONArray();
-        for(int i=0;i<allProject.size();i++){
+        for(int i = 0; i < allProject.size(); i++){
             array.element(allProject.getJSONObject(i).getString("id"));
         }
         return array;

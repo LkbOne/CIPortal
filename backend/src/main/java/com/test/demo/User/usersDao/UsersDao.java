@@ -17,11 +17,11 @@ public class UsersDao {
     }
     @Transactional
     public Users updateData(Users user){
-        Users userUpdated=usersRepository.save(user);
+        Users userUpdated = usersRepository.save(user);
         return userUpdated;
     }
     public Users register(Users user){
-        Users userSaved=usersRepository.save(user);
+        Users userSaved = usersRepository.save(user);
         return userSaved;
     }
 }

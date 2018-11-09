@@ -24,23 +24,20 @@ public class FlurryService extends ApiService{
         JSONObject bodyObject = JSONObject.fromObject(body);
         String name = bodyObject.getString("name");
         String privateToken = bodyObject.getString("privateToken");
-        return statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name,flurryData.comfirmBaseAuthorityAndGetCheckBoxData(privateToken)));
+        return statusHelper.jsonObject2Success(statusHelper.boardNameAndBoardData(name, flurryData.comfirmBaseAuthorityAndGetCheckBoxData(privateToken)));
     }
-
     JSONArray getIdArray(JSONArray allProject){
         JSONArray array = new JSONArray();
-        for(int i=0;i<allProject.size();i++){
+        for(int i = 0; i < allProject.size(); i++){
             JSONObject object = allProject.getJSONObject(i);
             JSONArray apps = object.getJSONArray("apps");
-            for(int j=0;j<apps.size();j++){
+            for(int j = 0; j < apps.size(); j++){
                 JSONObject app = apps.getJSONObject(j);
                 array.element(app.getString("id"));
             }
         }
         return array;
     }
-
-
     public JSONObject initCallApi(String body) throws IOException, ParseException {
         JSONObject bodyObject = JSONObject.fromObject(body);
         String name = bodyObject.getString("name");
@@ -48,22 +45,13 @@ public class FlurryService extends ApiService{
         JSONArray allProjects = flurryData.comfirmBaseAuthorityAndGetCheckBoxData(privateToken);
         JSONArray chosenProjects = getIdArray(allProjects);
         JSONObject setting = new JSONObject();
-        setting.element("privateToken",privateToken);
-        setting.element("allProjects",allProjects);
-        setting.element("chosenProjects",chosenProjects);
-        setting.element("interval",initInterval);
+        setting.element("privateToken", privateToken);
+        setting.element("allProjects", allProjects);
+        setting.element("chosenProjects", chosenProjects);
+        setting.element("interval", initInterval);
         if(name.equals("")){
             setting.element("name","Event Logs");
-
             userService.toSetting(adminAcount,setting.toString());
-//            logger.info("--");
-//            setting.element("name","Technical DashBoard");
-//            userService.toSetting(adminAcount,setting.toString());
-//            logger.info("--");
-//            setting.element("name","Geography DashBoard");
-//
-//            userService.toSetting(adminAcount,setting.toString());
-//            logger.info("--");
         }
         return statusHelper.onlySuccess();
     }

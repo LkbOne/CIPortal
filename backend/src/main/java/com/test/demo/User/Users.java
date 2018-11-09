@@ -18,5 +18,5 @@ public class Users {
     private JSONArray allProjects = new JSONArray();
     private JSONArray chosenProjects = new JSONArray();
     private JSONArray boardChoice = new JSONArray();
-    private int authority =1;
+    private int authority = 1;
 }

@@ -15,7 +15,7 @@ public class UserDaoImp implements UserDao{
     @Override
     @Transactional
     public User register(User user){
-        User userSaved=userRepository.save(user);
+        User userSaved = userRepository.save(user);
         return userSaved;
     }
     @Transactional
@@ -25,7 +25,7 @@ public class UserDaoImp implements UserDao{
     }
     @Transactional
     public User updateData(User user){
-        User userUpdated=userRepository.save(user);
+        User userUpdated = userRepository.save(user);
         return userUpdated;
     }
 }
