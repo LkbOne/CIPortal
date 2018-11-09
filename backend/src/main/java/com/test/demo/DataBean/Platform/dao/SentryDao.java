@@ -21,7 +21,7 @@ public class SentryDao implements PlatformDao {
     }
     public Sentry platformFindAndUpdate(String name, JSONObject setting){
         Sentry sentry = byName(name);
-        if(sentry==null){
+        if(sentry == null){
             sentry = new Sentry();
             sentry.setName(name);
         }

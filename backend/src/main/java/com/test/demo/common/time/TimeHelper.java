@@ -3,7 +3,6 @@ package com.test.demo.common.time;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -65,15 +64,14 @@ public class TimeHelper {
     }
     public int calcMinDiff(long now,long before){
         int seconds = 60;
-//        int seconds = 1;
-        return Integer.parseInt(calcDiff(now, before))/seconds;
+        return Integer.parseInt(calcDiff(now, before)) / seconds;
     }
-    public String dealWithTimeAndDiff(String before,String timeFormat) throws ParseException {
+    public String dealWithTimeAndDiff(String before, String timeFormat) throws ParseException {
         SimpleDateFormat df = new SimpleDateFormat(timeFormat);
         Date beforeTime = df.parse(before);
         return calcDiff(systemTime2UTC(),beforeTime.getTime());
     }
-    public String UTC2GMT8(SimpleDateFormat df,String before) throws ParseException {
+    public String UTC2GMT8(SimpleDateFormat df, String before) throws ParseException {
         Date beforeTime = df.parse(before);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         format.setTimeZone(TimeZone.getTimeZone("GMT-8")) ;
@@ -86,17 +84,17 @@ public class TimeHelper {
         cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
         return cal.getTimeInMillis();
     }
-    public String time2GMT8(String before,String timeFormat) throws ParseException {
+    public String time2GMT8(String before, String timeFormat) throws ParseException {
         SimpleDateFormat df = new SimpleDateFormat(timeFormat);
-        return UTC2GMT8(df,before);
+        return UTC2GMT8(df, before);
     }
-    public static String timeStamp2Date(String millSeconde,String format) {
+    public static String timeStamp2Date(String millSeconde, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(new Date(Long.valueOf(millSeconde)));
     }
     public static String month2AbbreviateEnglish(String month){
         int a = Integer.parseInt(month);
-        String[] abbreviateMonth =new String[]{"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+        String[] abbreviateMonth =new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         return abbreviateMonth[a];
     }
 }

@@ -15,11 +15,9 @@ import java.util.HashMap;
 
 public class TrelloPlatformHttpClient extends PlatformHttpClientHelper {
     private Logger logger = Logger.getLogger(TrelloPlatformHttpClient.class);
-    private final String ERRORKEY ="invalid key";
-    private final String ERRORMESSAGE ="invalid token";
-
+    private final String ERRORKEY = "invalid key";
+    private final String ERRORMESSAGE = "invalid token";
     private StatusHelper statusHelper = new StatusHelper();
-
     @Override
     public String dealUrl() {
         return null;
@@ -36,18 +34,14 @@ public class TrelloPlatformHttpClient extends PlatformHttpClientHelper {
         return responseData;
     }
     public void judgeVisitErroe(String responseData){
-        //logger.info("responseData:"+responseData);
          if(responseData.equals(ERRORMESSAGE)){
-             throw new ApiHttpCodeException(statusHelper.getSTATUS(),statusHelper.getTRELLOTOKEN());
+             throw new ApiHttpCodeException(statusHelper.getSTATUS(), statusHelper.getTRELLOTOKEN());
          } else if(responseData.equals(ERRORKEY)){
-            throw new ApiHttpCodeException(statusHelper.getSTATUS(),statusHelper.getTRELLOKEY());
+            throw new ApiHttpCodeException(statusHelper.getSTATUS(), statusHelper.getTRELLOKEY());
          }
-//        else{
-//            throw new ApiHttpCodeException(statusHelper.getSTATUS(),statusHelper.getSERVICEERROR());
-//        }
     }
     public String httpClientPostUilt(String url) throws IOException {
-        String responseData = postRequest(url,new HashMap(),new JSONObject());
+        String responseData = postRequest(url, new HashMap(), new JSONObject());
         judgeVisitErroe(responseData);
         return responseData;
     }
@@ -69,38 +63,32 @@ public class TrelloPlatformHttpClient extends PlatformHttpClientHelper {
     }
 
 
-    public String dealUrl(String choice,String boardId,String token,String key,String cardName,String ListId,String cardId,String desc) throws UnsupportedEncodingException {
+    public String dealUrl(String choice, String boardId, String token, String key, String cardName, String ListId, String cardId, String desc) throws UnsupportedEncodingException {
         String returnString = "" ;
         switch (choice){
             case "ALLPROJECTS":
-                returnString= "https://api.trello.com/1/members/me/boards?fields=name,url&token="+token+"&key="+key;
-                //logger.info("ALLBORAD:"+returnString);
+                returnString = "https://api.trello.com/1/members/me/boards?fields=name,url&token=" + token + "&key=" + key;
                 break;
             case "AllCARDS":
-                returnString="https://trello.com/1/boards/"+boardId+"/lists?cards=open&card_fields=id,dateLastActivity,name,badges,idMembers,labels,url&filterBychosen=open&fields=name&token="+token+"&key="+key;
-               // returnString="https://trello.com/1/boards/5af8e74835813a39caa9d3af/lists?cards=open&card_fields=id,dateLastActivity,name,badges,idMembers,labels,url&filter=open&fields=name&token=a4f99d894674645f9debb528cbd0ae86bf88d5119eb67e125d48904e2b369983&key=2f5cba1d75d5e6e2303d17e39f5a9ea6";
-                // logger.info("AllCARDS:"+returnString);
+                returnString = "https://trello.com/1/boards/" + boardId + "/lists?cards=open&card_fields=id,dateLastActivity,name,badges,idMembers,labels,url&filterBychosen=open&fields=name&token="+token+"&key="+key;
                 break;
             case "MEMBERS":
-                returnString= "https://api.trello.com/1/cards/"+cardId+"/members?&token="+token+"&key="+key;
-                //logger.info("MEMBERS:"+returnString);
+                returnString = "https://api.trello.com/1/cards/" + cardId + "/members?&token=" + token + "&key=" + key;
                 break;
-
             case "SHOWLIST":
-                returnString = "https://trello.com/1/boards/"+boardId+"/lists?fields=name&token="+token+"&key="+key;
+                returnString = "https://trello.com/1/boards/" + boardId + "/lists?fields=name&token=" + token + "&key=" + key;
                 break;
             case "ADDLIST":
-                returnString = "https://api.trello.com/1/boards/"+boardId+"/lists?name="+encoderUrl("Dev In-Progress")+"&token="+token+"&key="+key;
+                returnString = "https://api.trello.com/1/boards/" + boardId + "/lists?name=" + encoderUrl("Dev In-Progress") + "&token=" + token + "&key=" + key;
                 break;
             case "ADDCARD":
-                 returnString="https://api.trello.com/1/cards?pos=top&name="+cardName+"&desc="+desc+"&idList="+ListId+"&keepFromSource=all&token="+token+"&key="+key;
-
+                 returnString = "https://api.trello.com/1/cards?pos=top&name=" + cardName + "&desc=" + desc + "&idList=" + ListId + "&keepFromSource=all&token=" + token + "&key=" + key;
                  break;
             case "ADDLABEL":
-                returnString="https://api.trello.com/1/cards/"+cardId+"/labels?color=red&name=bug&token="+token+"&key="+key;
+                returnString = "https://api.trello.com/1/cards/" + cardId + "/labels?color=red&name=bug&token=" + token + "&key=" + key;
                 break;
             case "DELETECARD":
-                returnString="https://api.trello.com/1/cards/"+cardId+"?color=red&name=bug&token="+token+"&key="+key;
+                returnString = "https://api.trello.com/1/cards/" + cardId + "?color=red&name=bug&token=" + token + "&key=" + key;
                 break;
         }
         return returnString;

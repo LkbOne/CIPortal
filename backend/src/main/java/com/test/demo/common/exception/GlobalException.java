@@ -10,29 +10,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
 public class GlobalException {
-//    private Logger logger = Logger.getLogger(GlobalException.class);
-//    @Autowired
-//    private StatusHelper statusHelper;
-//    @ResponseBody
-//    @ExceptionHandler(value = ApiHttpCodeException.class)
-//    public JSONObject apiHttpCodeErrorHandler(ApiHttpCodeException ex) {
-//        JSONObject exception = new JSONObject();
-//        exception.put(ex.getCode(),ex.getMsg());
-//        logger.info("ApiHttpCodeException:"+exception);
-//        return exception;
-//    }
-//    @ResponseBody
-//    @ExceptionHandler(value = Exception.class)
-//    public JSONObject serviceErrorHandler() {
-//        JSONObject exception = new JSONObject();
-//        exception.put(statusHelper.getSTATUS(), statusHelper.getSERVICEERROR());
-//        logger.info("exception:"+exception);
-//        return exception;
-//    }
-//    @ResponseBody
-//    @ExceptionHandler(value = java.net.ConnectException.class)
-//    public JSONObject connectErrorHandler() {
-//        return apiHttpCodeErrorHandler(new ApiHttpCodeException(statusHelper.getSTATUS(),statusHelper.getHOSTORURL()));
-//
-//    }
+    private Logger logger = Logger.getLogger(GlobalException.class);
+    @Autowired
+    private StatusHelper statusHelper;
+    @ResponseBody
+    @ExceptionHandler(value = ApiHttpCodeException.class)
+    public JSONObject apiHttpCodeErrorHandler(ApiHttpCodeException ex) {
+        JSONObject exception = new JSONObject();
+        exception.put(ex.getCode(), ex.getMsg());
+        return exception;
+    }
+    @ResponseBody
+    @ExceptionHandler(value = Exception.class)
+    public JSONObject serviceErrorHandler() {
+        JSONObject exception = new JSONObject();
+        exception.put(statusHelper.getSTATUS(), statusHelper.getSERVICEERROR());
+        return exception;
+    }
+    @ResponseBody
+    @ExceptionHandler(value = java.net.ConnectException.class)
+    public JSONObject connectErrorHandler() {
+        return apiHttpCodeErrorHandler(new ApiHttpCodeException(statusHelper.getSTATUS(), statusHelper.getHOSTORURL()));
+
+    }
 }

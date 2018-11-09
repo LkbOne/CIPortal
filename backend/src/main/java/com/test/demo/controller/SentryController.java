@@ -30,7 +30,7 @@ public class SentryController {
     private Logger logger = Logger.getLogger(SentryController.class);
     @ApiOperation("获取Sentry下的所有项目名字与id")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="path",name="sentryToken",dataType="String",required=true,value="Sentry的Token",defaultValue="d49f8f5f4b274144a664d2ab120e76bf40a9e604a37341bba9b78be431cbd9bf"),
+            @ApiImplicitParam(paramType = "path", name = "sentryToken", dataType = "String", required = true, value = "Sentry的Token", defaultValue = "d49f8f5f4b274144a664d2ab120e76bf40a9e604a37341bba9b78be431cbd9bf"),
     })
     @RequestMapping(value = "sentry", method = RequestMethod.POST)
     JSONObject majorProjectsData(@RequestBody String body) throws IOException {
@@ -42,9 +42,8 @@ public class SentryController {
     }
     @RequestMapping(value = "sentry/dispel", method = RequestMethod.POST)
     void dispelBug() throws IOException {
-        JSONObject bugsObject=sentryService.dispelBug();
-        bugsObject.element("name","Sentry");
+        JSONObject bugsObject = sentryService.dispelBug();
+        bugsObject.element("name", "Sentry");
         WebSockets.sendMessageAll(bugsObject.toString());
     }
-
 }

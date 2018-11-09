@@ -23,8 +23,8 @@ public class Sonar implements Platforms {
     private int interval;
     public JSONObject allSettingParam(){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.element("host",host);
-        jsonObject.element("interval",interval);
+        jsonObject.element("host", host);
+        jsonObject.element("interval", interval);
         return jsonObject;
     }
     public JSONArray getSonarTrelloMapping(){
@@ -33,7 +33,6 @@ public class Sonar implements Platforms {
         }
         return new JSONArray();
     }
-
     public Sonar setAllPlatformsParams(JSONObject settings) {
         JSONArray allProjects = settings.getJSONArray("allProjects");
         JSONArray chosenProject = settings.getJSONArray("chosenProjects");

@@ -24,7 +24,7 @@ public class TrelloDao implements PlatformDao {
     @Override
     public Platforms platformFindAndUpdate(String name, JSONObject setting) {
         Trello trello = byName(name);
-        if(trello==null){
+        if(trello == null){
             trello = new Trello();
             trello.setName(name);
         }

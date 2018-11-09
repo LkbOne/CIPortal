@@ -13,8 +13,8 @@ public class CallAPIThread {
     @Async
     public void sendMessage(Data dataClass) throws IOException, ParseException {
         JSONObject data;
-        data =dataClass.socketGate(dataClass.getName());
-        data.element("name",dataClass.getName());
+        data = dataClass.socketGate(dataClass.getName());
+        data.element("name", dataClass.getName());
         WebSockets.sendMessageAll(data.toString());
     }
 }

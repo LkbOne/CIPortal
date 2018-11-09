@@ -27,7 +27,7 @@ public class SonarController {
     SonarService sonarService;
     @ApiOperation("获取Sonar下的所有项目名字与id和key")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="path",name="sonarHost",dataType="String",required=true,value="Sonar的Host",defaultValue="9000"),
+            @ApiImplicitParam(paramType = "path", name = "sonarHost", dataType = "String", required = true, value = "Sonar的Host",defaultValue = "9000"),
     })
     @RequestMapping(value = "sonar", method = RequestMethod.POST)
     JSONObject majorProjectsData(@RequestBody String body) throws IOException, JSONException {

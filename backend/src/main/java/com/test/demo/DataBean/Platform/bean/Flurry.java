@@ -23,8 +23,8 @@ public class Flurry implements Platforms {
     private int interval;
     public JSONObject allSettingParam(){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.element("privateToken",privateToken);
-        jsonObject.element("interval",interval);
+        jsonObject.element("privateToken", privateToken);
+        jsonObject.element("interval", interval);
         return jsonObject;
     }
     public Flurry setAllPlatformsParams(JSONObject settings) {

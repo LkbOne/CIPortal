@@ -21,18 +21,18 @@ public class SocketHashHandle2 {
         return searchEmptyNumber(0,0);
     }
     public int searchEmptyNumber(int index,int root){
-        if((hashNumber&(1<<index))>0){
+        if((hashNumber & (1 << index)) > 0){
             index++;
-            index%=width;
-            if(index==root)return -1;
-            return searchEmptyNumber(index,root);
+            index% = width;
+            if(index == root)return -1;
+            return searchEmptyNumber(index, root);
         }else{
-            hashNumber = (hashNumber|(1<<index));
+            hashNumber = (hashNumber | (1 << index));
             return index;
         }
     }
     public void setEmpty2Seat(int index){
-        if(index!=-1) {
+        if(index != -1) {
             hashNumber = hashNumber & (~(1 << index));
         }
     }
@@ -44,8 +44,8 @@ public class SocketHashHandle2 {
         while(true){
             if(!leftSocket.isEmpty()){
                 int sessionId = addSocket2Seat();
-                if(sessionId!=-1){
-                    webSocketSet.put(sessionId,leftSocket.remove());
+                if(sessionId != -1){
+                    webSocketSet.put(sessionId, leftSocket.remove());
                 }
             }
         }

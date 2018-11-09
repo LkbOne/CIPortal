@@ -49,28 +49,28 @@ public class PlatformFactory {
         Data data;
         switch (name){
             case "Sonar":
-                data =sonarData;
+                data = sonarData;
                 break;
             case "Trello":
-                data= trelloData;
+                data = trelloData;
                 break;
             case "Sentry":
-                data =sentryData;
+                data = sentryData;
                 break;
             case "Merge Request":
-                data =mergeRequestData;
+                data = mergeRequestData;
                 break;
             case "CI Testing":
-                data =ciData;
+                data = ciData;
                 break;
             case "Event Logs":
-                data =eventLogData;
+                data = eventLogData;
                 break;
             case "Technical DashBoard":
-                data =newDevicesOfTechnical;
+                data = newDevicesOfTechnical;
                 break;
             case "Geography DashBoard":
-                data =newDevicesOfRegion;
+                data = newDevicesOfRegion;
                 break;
             default:
                 data = new NullData();
@@ -82,7 +82,7 @@ public class PlatformFactory {
         PlatformDao platformDao;
         switch (name){
             case "Sonar":
-                platformDao= sonarDao;
+                platformDao = sonarDao;
                 break;
             case "Trello":
                 platformDao = trelloDao;

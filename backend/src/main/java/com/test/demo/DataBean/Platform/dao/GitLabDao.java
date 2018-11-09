@@ -22,8 +22,8 @@ public class GitLabDao implements PlatformDao {
 
     @Override
     public Platforms platformFindAndUpdate(String name, JSONObject setting) {
-        GitLab gitLab =byName(name);
-        if(gitLab==null){
+        GitLab gitLab = byName(name);
+        if(gitLab == null){
             gitLab = new GitLab();
             gitLab.setName(name);
         }

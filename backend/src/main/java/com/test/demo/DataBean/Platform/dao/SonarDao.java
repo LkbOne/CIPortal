@@ -22,7 +22,7 @@ public class SonarDao implements PlatformDao {
 
 
     public Platforms platformFindAndUpdate(String name, JSONObject setting) {
-        Sonar sonar =byName(name);
+        Sonar sonar = byName(name);
         if(sonar==null){
             sonar = new Sonar();
             sonar.setName(name);

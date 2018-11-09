@@ -25,10 +25,10 @@ public class Sentry implements Platforms {
     private int interval;
     public JSONObject allSettingParam(){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.element("privateToken",privateToken);
-        jsonObject.element("interval",interval);
-        jsonObject.element("sentryTrelloMapping",getSentryTrelloMapping());
-        jsonObject.element("sentryGitLabMapping",getSentryGitLabMapping());
+        jsonObject.element("privateToken", privateToken);
+        jsonObject.element("interval", interval);
+        jsonObject.element("sentryTrelloMapping", getSentryTrelloMapping());
+        jsonObject.element("sentryGitLabMapping", getSentryGitLabMapping());
         return jsonObject;
     }
     public boolean getBugs(){
@@ -38,7 +38,7 @@ public class Sentry implements Platforms {
         return false;
     }
     public void setBugs(boolean flag){
-        setting.element("bug",flag);
+        setting.element("bug", flag);
     }
     public Sentry setAllPlatformsParams(JSONObject settings){
         JSONArray allProjects = settings.getJSONArray("allProjects");
@@ -51,7 +51,7 @@ public class Sentry implements Platforms {
         return this;
     }
     public void setSentryGitLabMapping(JSONArray sentryGitLabMapping){
-         setting.element("sentryGitLabMapping",sentryGitLabMapping);
+         setting.element("sentryGitLabMapping", sentryGitLabMapping);
     }
     public JSONArray getSentryGitLabMapping(){
         if(setting.has("sentryGitLabMapping")){
@@ -61,7 +61,7 @@ public class Sentry implements Platforms {
         return new JSONArray();
     }
     public void setSentryGitLabHashMap(HashMap sentryGitLabHashMap){
-        setting.element("sentryGitLabHashMap",sentryGitLabHashMap);
+        setting.element("sentryGitLabHashMap", sentryGitLabHashMap);
     }
     public JSONObject getSentryGitLabHashMap(){
         if(setting.has("sentryGitLabHashMap")){
@@ -78,7 +78,7 @@ public class Sentry implements Platforms {
         return new JSONObject();
     }
     public void setSentryTrelloHashMap(HashMap sentryTrelloHashMap){
-        setting.element("sentryTrelloHashMap",sentryTrelloHashMap);
+        setting.element("sentryTrelloHashMap", sentryTrelloHashMap);
     }
 
     public JSONArray getSentryTrelloMapping(){
@@ -88,6 +88,6 @@ public class Sentry implements Platforms {
         return new JSONArray();
     }
     public void setSentryTrelloMapping(JSONArray sentryTrelloMapping){
-        setting.element("sentryTrelloMapping",sentryTrelloMapping);
+        setting.element("sentryTrelloMapping", sentryTrelloMapping);
     }
 }

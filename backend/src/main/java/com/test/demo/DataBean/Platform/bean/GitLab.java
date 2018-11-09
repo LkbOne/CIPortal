@@ -20,13 +20,13 @@ public class GitLab implements Platforms {
     private String ip;
     private JSONArray chosenProjects;
     private JSONArray allProjects;
-    private JSONObject setting =new JSONObject();
+    private JSONObject setting = new JSONObject();
     private int interval;
     public JSONObject allSettingParam(){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.element("privateToken",privateToken);
-        jsonObject.element("ip",ip);
-        jsonObject.element("interval",interval);
+        jsonObject.element("privateToken", privateToken);
+        jsonObject.element("ip", ip);
+        jsonObject.element("interval", interval);
         return jsonObject;
     }
 
@@ -43,7 +43,7 @@ public class GitLab implements Platforms {
         return this;
     }
     public void setHooksInSetting(JSONArray hooks){
-        setting.element("hooks",hooks);
+        setting.element("hooks", hooks);
     }
     public JSONArray getHooksInSetting(){
         if(setting.has("hooks")){
@@ -53,7 +53,7 @@ public class GitLab implements Platforms {
         }
     }
     public void setImageInSetting(JSONArray projectImages){
-        setting.element("projectImage",projectImages);
+        setting.element("projectImage", projectImages);
     }
     public JSONArray getImagesInSetting(){
         if(setting.has("projectImage")){

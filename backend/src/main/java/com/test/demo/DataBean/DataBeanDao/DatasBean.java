@@ -17,16 +17,5 @@ public class DatasBean {
     @Id
     private String id;
     private String name;
-//    private JSONArray datas;
     private String datas;
-//    private JSONObject setting;
-//    public boolean getBugs(){
-//        if(setting.has("bug")){
-//            return setting.getBoolean("bug");
-//        }
-//        return false;
-//    }
-//    public void setBugs(boolean flag){
-//        setting.element("bug",flag);
-//    }
 }

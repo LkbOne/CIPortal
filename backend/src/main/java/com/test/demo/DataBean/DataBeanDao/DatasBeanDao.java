@@ -16,12 +16,10 @@ public class DatasBeanDao {
     }
     public void datasBeanFindAndUpdate(String name,JSONArray array){
         DatasBean datasBean = datasBeanByName(name);
-        if(datasBean==null){
+        if(datasBean == null){
             datasBean = new DatasBean();
             datasBean.setName(name);
         }
-
-//        datasBean.setDatas(array);
         datasBean.setDatas(array.toString());
         datasBeanSaveAndUpdate(datasBean);
     }

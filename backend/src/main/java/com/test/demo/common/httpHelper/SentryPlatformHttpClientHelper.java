@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class SentryPlatformHttpClientHelper extends PlatformHttpClientHelper {
     private Logger logger = Logger.getLogger(SentryPlatformHttpClientHelper.class);
-    private final String ERRORKEY ="detail";
-    private final String ERRORMESSAGE ="Invalid token";
+    private final String ERRORKEY = "detail";
+    private final String ERRORMESSAGE = "Invalid token";
     private StatusHelper statusHelper = new StatusHelper();
     public void judgeVisitErroe(String responseData){
         try{
@@ -22,7 +22,7 @@ public class SentryPlatformHttpClientHelper extends PlatformHttpClientHelper {
         }catch (net.sf.json.JSONException ex){
             JSONObject judgeObject = JSONObject.fromObject(responseData);
             if(judgeObject.has(ERRORKEY)&&judgeObject.getString(ERRORKEY).equals(ERRORMESSAGE)){
-                throw new ApiHttpCodeException(statusHelper.getSTATUS(),statusHelper.getSENTRYTOKEN());
+                throw new ApiHttpCodeException(statusHelper.getSTATUS(), statusHelper.getSENTRYTOKEN());
             }else if(judgeObject.has(ERRORKEY)){
                 logger.info("sentry_message:"+judgeObject);
             }
@@ -36,37 +36,20 @@ public class SentryPlatformHttpClientHelper extends PlatformHttpClientHelper {
         judgeVisitErroe(responseData);
         return responseData;
     }
-//    public String httpClientDeleteUilt(String url, String authorization) throws IOException {
-//        HttpClient client = new HttpClient();
-//        DeleteMethod delete = new DeleteMethod(url);
-//        delete.setRequestHeader("Content-Type", "application/json ");
-//
-//        delete.setRequestHeader("Authorization", "Bearer "+authorization);
-//        client.executeMethod(delete);
-//        InputStream in = delete.getResponseBodyAsStream();
-//        StringBuffer sb = new StringBuffer();
-//        InputStreamReader isr = new InputStreamReader(in, "UTF-8");
-//        char[] b = new char[4096];
-//        for (int n; (n = isr.read(b)) != -1; ) {
-//            sb.append(new String(b, 0, n));
-//        }
-//        String returnStr = sb.toString();
-//        return returnStr;
-//    }
     public String dealUrl(String choice,String organization,String projectSlug,String issueId){
        String returnString = "" ;
        switch (choice){
            case "ALLPROJECTS":
-               returnString= "https://sentry.io/api/0/projects/";
+               returnString = "https://sentry.io/api/0/projects/";
                break;
            case "ISSUE":
-               returnString = "https://sentry.io/api/0/projects/"+organization+"/"+projectSlug+"/issues/";
+               returnString = "https://sentry.io/api/0/projects/" + organization + "/" + projectSlug + "/issues/";
                break;
            case "ISSUEEVENT":
-               returnString = "https://sentry.io/api/0/issues/"+issueId+"/events/";
+               returnString = "https://sentry.io/api/0/issues/" + issueId + "/events/";
                break;
            case "DELETEISSUE":
-               returnString = "https://sentry.io/api/0/issues/"+issueId+"/";
+               returnString = "https://sentry.io/api/0/issues/" + issueId + "/";
                break;
        }
        return returnString;
@@ -89,7 +72,6 @@ public class SentryPlatformHttpClientHelper extends PlatformHttpClientHelper {
     public String httpClientGetUilt(String url) throws IOException {
         return null;
     }
-
     @Override
     public String httpClientPostUilt(String url) {
         return null;

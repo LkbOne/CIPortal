@@ -19,11 +19,10 @@ public class FlurryDao implements PlatformDao {
         Flurry flurry = (Flurry) platforms;
         return flurryRepository.save(flurry);
     }
-
     @Override
     public Platforms platformFindAndUpdate(String name, JSONObject setting) {
         Flurry flurry = byName(name);
-        if(flurry==null){
+        if(flurry == null){
             flurry = new Flurry();
             flurry.setName(name);
         }

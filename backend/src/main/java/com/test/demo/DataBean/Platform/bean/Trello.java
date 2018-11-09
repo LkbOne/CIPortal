@@ -24,9 +24,9 @@ public class Trello implements Platforms {
     private int interval;
     public JSONObject allSettingParam(){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.element("appKey",appKey);
-        jsonObject.element("privateToken",privateToken);
-        jsonObject.element("interval",interval);
+        jsonObject.element("appKey", appKey);
+        jsonObject.element("privateToken", privateToken);
+        jsonObject.element("interval", interval);
         return jsonObject;
     }
     public Trello setAllPlatformsParams(JSONObject settings) {

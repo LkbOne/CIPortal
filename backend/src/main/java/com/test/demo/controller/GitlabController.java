@@ -29,26 +29,20 @@ public class GitlabController {
     private StatusHelper statusHelper = new StatusHelper();
     @RequestMapping(value = "/{account}", method = RequestMethod.POST)
     String postSendMessageToUser(@RequestBody String data,@PathVariable("account") String account) throws IOException, ParseException, EncodeException {
-        //logger.info("account:"+account);
-        //测试gitlab——hook
-        logger.info("account:_____hooks"+data);
-
         gitlabService.sendAndComfirm(account, data);
         return "success";
     }
     @ApiOperation("获取gitlab下的所有项目名字与id")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="path",name="gitIp",dataType="String",required=true,value="git的ip地址",defaultValue="146.222.94.208"),
-            @ApiImplicitParam(paramType="path",name="gitPrivateToken",dataType="String",required=true,value="git的token",defaultValue="bSSzMHFP7fB5gpGUM27w")
+            @ApiImplicitParam(paramType = "path", name = "gitIp", dataType = "String", required = true, value = "git的ip地址", defaultValue = "146.222.94.208"),
+            @ApiImplicitParam(paramType = "path", name = "gitPrivateToken", dataType = "String",required = true, value = "git的token", defaultValue = "bSSzMHFP7fB5gpGUM27w")
     })
-    //job/gitIp={gitIp}&gitPrivateToken={gitPrivateToken}
     @RequestMapping(value = "gitLab", method = RequestMethod.POST)
     JSONObject majorProjectsData(@RequestBody String body) throws IOException {
         return gitlabService.majorProjectsData(body);
     }
     @RequestMapping(value = "gitLab/init", method = RequestMethod.POST)
     JSONObject init(@RequestBody String body) throws IOException, ParseException {
-        logger.info("body:"+body);
         return gitlabService.initCallApi(body);
     }
 }

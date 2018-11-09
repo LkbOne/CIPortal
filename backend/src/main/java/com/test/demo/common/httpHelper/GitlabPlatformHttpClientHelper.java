@@ -16,38 +16,35 @@ import java.util.Map;
 
 public class GitlabPlatformHttpClientHelper extends PlatformHttpClientHelper {
     private Logger logger = Logger.getLogger(GitlabPlatformHttpClientHelper.class);
-
-    private final String ERRORKEY ="message";
-    private final String ERRORMESSAGE ="401 Unauthorized";
+    private final String ERRORKEY = "message";
+    private final String ERRORMESSAGE = "401 Unauthorized";
     private StatusHelper statusHelper = new StatusHelper();
     public void judgeVisitErroe(String responseData){
         try{
             JSONArray.fromObject(responseData);
         }catch (net.sf.json.JSONException ex){
             JSONObject judgeObject = JSONObject.fromObject(responseData);
-            if(judgeObject.has(ERRORKEY)&&judgeObject.getString(ERRORKEY).equals(ERRORMESSAGE)){
-                throw new ApiHttpCodeException(statusHelper.getSTATUS(),statusHelper.getGITTOKEN());
+            if(judgeObject.has(ERRORKEY) && judgeObject.getString(ERRORKEY).equals(ERRORMESSAGE)){
+                throw new ApiHttpCodeException(statusHelper.getSTATUS(), statusHelper.getGITTOKEN());
             }else if(judgeObject.has(ERRORKEY)){
-                logger.info("git_message:"+judgeObject);
+                logger.info("git_message:" + judgeObject);
             }
         }
     }
-    public String dealUrl(String choice,String gitIp,String projectId,String hookUrl){
+    public String dealUrl(String choice, String gitIp, String projectId, String hookUrl){
         String url = "";
         switch(choice){
             case "ALLGITPROJECT":
-                url +="http://"+gitIp+"/api/v4/projects/" ;
+                url += "http://" + gitIp + "/api/v4/projects/" ;
                 break;
             case "HOOK":
-                logger.info("url:"+url);
-                url+="http://"+gitIp+"/api/v4/projects/"+projectId+"/hooks";
-                logger.info("url222222:"+url);
+                url+="http://" + gitIp + "/api/v4/projects/" + projectId + "/hooks";
                 break;
             case "ADDWS":
                 url+="ws"+hookUrl;
                 break;
             case "Merge Request":
-                url+="http://"+gitIp+"/api/v4/projects/"+projectId+"/merge_requests";
+                url += "http://" + gitIp + "/api/v4/projects/" + projectId + "/merge_requests";
                 break;
         }
         return url;
@@ -71,10 +68,10 @@ public class GitlabPlatformHttpClientHelper extends PlatformHttpClientHelper {
         }
         return url;
     }
-    public  String httpClientGetUilt(String url,String token) throws IOException {
+    public  String httpClientGetUilt(String url, String token) throws IOException {
         Map<String,String> header = new HashMap<String,String>();
-        header.put("PRIVATE-TOKEN",token);
-        String responseData = super.getRequest(url,header);
+        header.put("PRIVATE-TOKEN", token);
+        String responseData = super.getRequest(url, header);
         judgeVisitErroe(responseData);
         return responseData;
     }
@@ -83,39 +80,9 @@ public class GitlabPlatformHttpClientHelper extends PlatformHttpClientHelper {
         DeleteMethod delete = new DeleteMethod(url);
         delete.setRequestHeader("PRIVATE-TOKEN", token);
         delete.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
         client.executeMethod(delete);
-//        InputStream in = delete.getResponseBodyAsStream();
-//下面将stream转换为String
-//        StringBuffer sb = new StringBuffer();
-//        InputStreamReader isr = new InputStreamReader(in, "UTF-8");
-//        char[] b = new char[4096];
-//        for (int n; (n = isr.read(b)) != -1; ) {
-//            sb.append(new String(b, 0, n));
-//        }
-//        String returnStr = sb.toString();
         return "1";
-
     }
-//    public String httpClientPost(String url, String token,String account) throws IOException {
-//        HttpClient client = new HttpClient();
-//        PostMethod post = new PostMethod(url);
-//        post.setRequestHeader("PRIVATE-TOKEN", token);
-//        post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-//        post.setRequestHeader("Access-Control-Allow-Origin","*");
-//        post = setBody(post, account);
-//        client.executeMethod(post);
-//        InputStream in = post.getResponseBodyAsStream();
-////下面将stream转换为String
-//        StringBuffer sb = new StringBuffer();
-//        InputStreamReader isr = new InputStreamReader(in, "UTF-8");
-//        char[] b = new char[4096];
-//        for (int n; (n = isr.read(b)) != -1; ) {
-//            sb.append(new String(b, 0, n));
-//        }
-//        String returnStr = sb.toString();
-//        return returnStr;
-//    }
     public JSONObject bodyObject(String ip,String account){
         JSONObject body = new JSONObject();
         //需要得到本机的ip动态的更改ip，为了绑定hook
@@ -162,8 +129,6 @@ public class GitlabPlatformHttpClientHelper extends PlatformHttpClientHelper {
         judgeVisitErroe(responseData);
         return responseData;
     }
-
-
     public String postRequest22(String url,Map<String,String> header,JSONObject bodyObject) throws IOException {
         HttpClient client = new HttpClient();
         PostMethod post = new PostMethod(url);

@@ -27,18 +27,15 @@ public class TrelloController {
     private TrelloPlatformHttpClient trelloHttpClientHelper = new TrelloPlatformHttpClient();
     @ApiOperation("获取Trello下的所有项目名字与id")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="path",name="trelloToken",dataType="String",required=true,value="Trello的Token",defaultValue="a4f99d894674645f9debb528cbd0ae86bf88d5119eb67e125d48904e2b369983"),
-            @ApiImplicitParam(paramType="path",name="trelloAppkey",dataType="String",required=true,value="Trello的Appkey",defaultValue="2f5cba1d75d5e6e2303d17e39f5a9ea6"),
+            @ApiImplicitParam(paramType = "path", name = "trelloToken", dataType="String", required = true, value = "Trello的Token",defaultValue="a4f99d894674645f9debb528cbd0ae86bf88d5119eb67e125d48904e2b369983"),
+            @ApiImplicitParam(paramType = "path", name = "trelloAppkey", dataType="String", required = true, value = "Trello的Appkey",defaultValue="2f5cba1d75d5e6e2303d17e39f5a9ea6"),
     })
-    //trello/token={trelloToken}&key={trelloAppkey}
     @RequestMapping(value = "trello", method = RequestMethod.POST)
     JSONObject majorProjectsData(@RequestBody String body) throws IOException, JSONException {
-        logger.info("body:"+body);
         return trelloService.majorProjectsData(body);
     }
     @RequestMapping(value = "trello/init", method = RequestMethod.POST)
     JSONObject init(@RequestBody String body) throws IOException, JSONException, ParseException {
-        logger.info("body:"+body);
         return trelloService.initCallApi(body);
     }
 }

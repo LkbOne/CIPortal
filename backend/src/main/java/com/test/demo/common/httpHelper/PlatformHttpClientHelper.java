@@ -14,10 +14,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public abstract class PlatformHttpClientHelper {
-
     abstract public String dealUrl();
     abstract public String judgeVisitErroe();
-
     abstract public String httpClientGetUilt(String url) throws IOException;
     abstract public String httpClientPostUilt(String url) throws IOException;
     public String getRequest(String url, Map<String,String> header) throws IOException {
@@ -39,7 +37,7 @@ public abstract class PlatformHttpClientHelper {
         String returnStr = sb.toString();
         return returnStr;
     }
-    public String postRequest(String url,Map<String,String> header,JSONObject bodyObject) throws IOException {
+    public String postRequest(String url, Map<String,String> header, JSONObject bodyObject) throws IOException {
         HttpClient client = new HttpClient();
         PostMethod post = new PostMethod(url);
         Iterator it = header.entrySet().iterator();

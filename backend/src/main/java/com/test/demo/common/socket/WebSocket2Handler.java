@@ -41,24 +41,20 @@ public class WebSocket2Handler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
         JSONObject rebackMessage = new JSONObject();
         this.account = webSockets.addSocket2Seat();
-        if(this.account!=-1) {
+        if(this.account != -1) {
             WebSockets.webSocketSet.put(this.account, webSocketSession);
             rebackMessage.put("eventType", "SUCCESS");
         }else{
             rebackMessage.put("eventType", "FULL");
-            WebSockets.sendMessage(webSocketSession,rebackMessage.toString());
-//            webSockets.setSocket2Queue(webSocketSession);
+            WebSockets.sendMessage(webSocketSession, rebackMessage.toString());
             rebackMessage.put("eventType", "SUCCESSSSSSS");
         }
-        WebSockets.sendMessage(webSocketSession,rebackMessage.toString());
+        WebSockets.sendMessage(webSocketSession, rebackMessage.toString());
     }
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
-        logger.info("this.account："+this.account);
-
-        logger.info("this.id："+webSocketSession.getId());
         WebSockets.setEmpty2Seat(this.account);
-        if(account!=-1) {
+        if(account != -1) {
             WebSockets.webSocketSet.remove(this.account);
         }
         webSockets.setEmpty2Seat(this.account);
@@ -66,7 +62,6 @@ public class WebSocket2Handler extends TextWebSocketHandler {
     }
     @Override
     public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
-//        webSocketSession.sendMessage(webSocketMessage);
     }
 
     @Override
